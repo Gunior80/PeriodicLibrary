@@ -17,3 +17,14 @@ class Instance(models.Model):
                                    related_name="periodical", on_delete=models.CASCADE)
     date = models.DateField(verbose_name=_("date"))
     file = models.FileField(verbose_name=_("instance"), upload_to=None)
+
+
+class Client(models.Model):
+    name = models.CharField(verbose_name=_("name"), max_length=64)
+
+
+class Address(models.model):
+    client = models.ForeignKey(Client, verbose_name=_("client"),
+                               related_name="address", on_delete=models.CASCADE)
+    ipaddress = models.CharField(verbose_name=_("name"), max_length=15, unique=True)
+
