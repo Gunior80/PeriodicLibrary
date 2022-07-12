@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import Count, Aggregate
+from django.db.models.functions import TruncYear, TruncMonth, Trunc
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
@@ -12,18 +14,35 @@ class Periodical(models.Model):
         verbose_name = _("Periodical")
         verbose_name_plural = _("Periodicals")
 
+
     def __str__(self):
         return self.name
+
+    def get_struct(self):
+        data = self.instances.all()
+        struct = {}
+        for obj in data:
+            year = obj.date.strftime("%Y")
+            month = obj.date.strftime("%B")
+            if year not in struct:
+                struct[year] = {}
+                if month not in struct[year]:
+                    struct[year][month] = {}
+                    struct[year][month] = [obj.file, ]
+            struct[year][month] += [obj.file, ]
+
+        print(struct)
+        return struct
 
 
 def periodical_save_path(instance, filename):
     return 'library/{0}/{1}/{2}.{3}'.format(instance.periodical.name, instance.date.year,
-                                            instance.date.strftime("%m-%d-%Y"), filename.split('.')[-1])
+                                            instance.date.strftime("%d.%m.%Y"), filename.split('.')[-1])
 
 
 class Instance(models.Model):
     periodical = models.ForeignKey(Periodical, verbose_name=_("periodical name"),
-                                   related_name="periodical", on_delete=models.CASCADE)
+                                   related_name="instances", on_delete=models.CASCADE)
     date = models.DateField(verbose_name=_("date"))
     file = models.FileField(verbose_name=_("instance"), upload_to=periodical_save_path)
 
@@ -37,6 +56,7 @@ class Instance(models.Model):
     class Meta:
         verbose_name = _("Periodical instance")
         verbose_name_plural = _("Periodical instances")
+        ordering = ["-date", ]
 
     def __str__(self):
         return self.file.name
