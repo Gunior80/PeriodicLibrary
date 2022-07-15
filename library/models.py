@@ -1,3 +1,5 @@
+import os
+
 from django.db import models
 from django.db.models import Count, Aggregate
 from django.db.models.functions import TruncYear, TruncMonth, Trunc
@@ -22,15 +24,13 @@ class Periodical(models.Model):
         data = self.instances.all()
         struct = {}
         for obj in data:
-            year = obj.date.strftime("%Y")
-            month = obj.date.strftime("%B")
+            year = obj.date.year
+            month = _(obj.date.strftime('%B'))
             if year not in struct:
                 struct[year] = {}
-                if month not in struct[year]:
-                    struct[year][month] = {}
-                    struct[year][month] = [obj.file, ]
-            struct[year][month] += [obj.file, ]
-
+            if month not in struct[year]:
+                struct[year][month] = []
+            struct[year][month].append(obj)
         print(struct)
         return struct
 
@@ -45,6 +45,9 @@ class Instance(models.Model):
                                    related_name="instances", on_delete=models.CASCADE)
     date = models.DateField(verbose_name=_("date"))
     file = models.FileField(verbose_name=_("instance"), upload_to=periodical_save_path)
+
+    def shortname(self):
+        return '.'.join(os.path.basename(self.file.name).split('.')[:-1])
 
     def save(self, *args, **kwargs):
         if self.pk:

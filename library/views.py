@@ -15,7 +15,6 @@ class ViewerPDF(ListView):
     template_name = 'library/viewer.html'
 
 
-
 def load_pdf(request):
     import os
     print(00000)
