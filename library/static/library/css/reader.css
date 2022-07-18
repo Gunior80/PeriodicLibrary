@@ -1,0 +1,11 @@
+#canvas_pdf {
+    width: 800px;
+    height: 450px;
+    overflow: auto;
+}
+
+#pdf_viewer {
+    background: #333;
+    text-align: center;
+    border: solid 3px;
+}

@@ -14,6 +14,10 @@
     <script src="{% static 'library/bootstrap/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'library/js/jquery-3.6.0.min.js' %}"></script>
     <script src="{% static 'library/js/bstreeview.js' %}"></script>
+    <script src="{% static 'library/pdfjs-2.14/build/pdf.js' %}"></script>
+    <script src="{% static 'library/pdfjs-2.14/build/pdf.worker.js' %}"></script>
+    <script src="{% static 'library/js/reader.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'library/css/reader.css' %}">
     <script defer src="{% static 'library/js/theme.js' %}"></script>
 </head>
 
@@ -26,6 +30,7 @@
                 </a>
                 <form class="d-none d-sm-inline-block navbar-search">
                     <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="Search for ..."><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
+                    {% csrf_token %}
                 </form>
                 <div id="tree">
 
@@ -34,9 +39,10 @@
         </nav>
         <div class="d-flex flex-column" id="content-wrapper">
             <div id="content">
-                <div class="container-fluid">
-                    <h3 class="text-dark mb-1">Blank Page</h3>
-                </div>
+                    <div id="pdf_viewer">
+                        <canvas id="canvas_pdf"></canvas>
+                        <div id="text-layer" class="textLayer"></div>
+                    </div>
             </div>
         </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
     </div>
@@ -44,10 +50,10 @@
 <script>
     $(function () {
         var json = [
+            {% for periodic in periodical.all %}
             {
-                {% for periodic in periodical.all %}
                 text: "{{ periodic.name }}",
-                icon: "fa fa-inbox fa-fw",
+                icon: "",
                 nodes: [
                     {% for year, months in periodic.get_struct.items %}
                     {
@@ -60,7 +66,9 @@
                                 nodes: [
                                     {% for instance in instances %}
                                     {
-                                        text: "<div>{{ instance.shortname }}</div>"
+                                        id: "{{ instance.id }}",
+                                        class: "menu-item",
+                                        text: "{{ instance.shortname }}",
                                     },
                                     {% endfor %}
                                 ]
@@ -69,19 +77,68 @@
                         ]
                     },
                     {% endfor %}
-                ],
-                {% endfor %}
+                ]
             },
+            {% endfor %}
         ];
 
         $('#tree').bstreeview({
             data: json,
             expandIcon: 'fa fa-angle-down fa-fw',
             collapseIcon: 'fa fa-angle-right fa-fw',
-            indent: 1.25,
-            parentsMarginLeft: '1.25rem',
+            indent: 1.00,
+            parentsMarginLeft: '1.00rem',
             openNodeLinkOnNewTab: true
         });
     });
+
+    $( document ).ready(function() {
+        var elements = document.querySelectorAll(".menu-item");
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].onclick = function(e){
+                var myState = {
+                    pdf: null,
+                    currentPage: 1,
+                    zoom: 1
+                }
+                pdfjsLib.getDocument("./media/library/%D0%9D%D1%8F%D1%80%D1%8A%D1%8F%D0%BD%D0%B0%20%D0%92%D1%8B%D0%BD%D0%B4%D0%B5%D1%80/2022/12.07.2022.pdf").promise.then((pdf) => {
+                    myState.pdf = pdf;
+                    render();
+                });
+
+                function render() {
+                    myState.pdf.getPage(myState.currentPage).then((page) => {
+                        var canvas = document.getElementById("canvas_pdf");
+                        var ctx = canvas.getContext('2d');
+                        var viewport = page.getViewport(myState.zoom);
+                        canvas.width = viewport.width;
+                        canvas.height = viewport.height;
+                        page.render({
+                            canvasContext: ctx,
+                            viewport: viewport
+                        });
+                    });
+                }
+
+            };
+        }
+    });
+
+    function load_pdf(doc){
+        let token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+        let msg = { csrfmiddlewaretoken: token, document: doc };
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'load_pdf' %}",
+            data: msg,
+            success: function(data) {
+                alert('.'+data['url']);
+                return '.'+data['url'];
+            },
+            error:  function(xhr, str){
+                return '';
+            }
+        });
+    }
 </script>
 </html>

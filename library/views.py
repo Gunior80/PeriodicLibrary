@@ -1,9 +1,10 @@
 import base64
 
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
-from django.views.generic import TemplateView, ListView
+from django.views import View
+from django.views.generic import ListView
 
 # Create your views here.
 from library import models
@@ -15,10 +16,13 @@ class ViewerPDF(ListView):
     template_name = 'library/viewer.html'
 
 
-def load_pdf(request):
-    import os
-    print(00000)
+class LoadPDF(View):
+    http_method_names = ['post']
 
-    with open(os.path.join(settings.MEDIA_ROOT, 'hello.pdf'), 'rb') as file:
-        response = HttpResponse(base64.encodebytes(file.read()), content_type='application/pdf')
-    return response
+    def post(self, request, **kwargs):
+        response = {"url": None}
+        id = request.POST.get('document')
+        if id:
+            object = models.Instance.objects.get(id=id)
+            response["url"] = object.file.url
+        return HttpResponse(JsonResponse(response), content_type="application/json")
