@@ -1,12 +1,10 @@
 import os
-
 from django.db import models
-from django.db.models import Count, Aggregate
-from django.db.models.functions import TruncYear, TruncMonth, Trunc
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 # Create your models here.
+from library.utils import dateformat
 
 
 class Periodical(models.Model):
@@ -16,12 +14,14 @@ class Periodical(models.Model):
         verbose_name = _("Periodical")
         verbose_name_plural = _("Periodicals")
 
-
     def __str__(self):
         return self.name
 
-    def get_struct(self):
-        data = self.instances.all()
+    def get_struct(self, queryset=None):
+        if queryset:
+            data = queryset
+        else:
+            data = self.instances.all()
         struct = {}
         for obj in data:
             year = obj.date.year
@@ -31,7 +31,6 @@ class Periodical(models.Model):
             if month not in struct[year]:
                 struct[year][month] = []
             struct[year][month].append(obj)
-        print(struct)
         return struct
 
 
@@ -74,9 +73,43 @@ def file_delete(sender, instance, **kwargs):
 class Client(models.Model):
     name = models.CharField(verbose_name=_("name"), max_length=64)
 
+    def _getstat(self, periodic):
+        return self.statistics.get_or_create(client=self, periodical=periodic, date=dateformat())[0]
+
+    def inc_visit(self, periodic):
+        print(self._getstat(periodic))
+        stat = self._getstat(periodic)
+        stat.visits += 1
+        stat.save()
+
+    def inc_view(self, periodic):
+        stat = self._getstat(periodic)
+        stat.views += 1
+        stat.save()
+
 
 class Address(models.Model):
     client = models.ForeignKey(Client, verbose_name=_("client"),
-                               related_name="address", on_delete=models.CASCADE)
+                               related_name="addresses", on_delete=models.CASCADE)
     ipaddress = models.CharField(verbose_name=_("name"), max_length=15, unique=True)
 
+    @staticmethod
+    def is_client(addr):
+        return Address.objects.filter(ipaddress=addr).first()
+
+    @staticmethod
+    def get_client(addr):
+        return Address.objects.get(ipaddress=addr).client
+
+
+
+
+
+class Statistic(models.Model):
+    client = models.ForeignKey(Client, verbose_name=_("client"),
+                               related_name="statistics", on_delete=models.CASCADE)
+    periodical = models.ForeignKey(Periodical, verbose_name=_("periodical name"),
+                                   related_name="statistics", on_delete=models.CASCADE)
+    date = models.DateField(verbose_name=_("date"), default=dateformat)
+    visits = models.PositiveIntegerField(verbose_name=_('visits'), default=0, blank=False, null=False)
+    views = models.PositiveIntegerField(verbose_name=_('views'), default=0, blank=False, null=False)

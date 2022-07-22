@@ -1,11 +1,21 @@
-#canvas_pdf {
-    width: 800px;
-    height: 450px;
-    overflow: auto;
+body {
+    overflow: hidden;
 }
 
-#pdf_viewer {
-    background: #333;
-    text-align: center;
-    border: solid 3px;
+.sidebar {
+    width: 17rem !important;
 }
+
+#tree {
+    height: 85vh;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+}
+
+#content {
+    min-height: 100vh;
+    width: 100%;
+}
+
+
+

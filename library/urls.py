@@ -16,9 +16,9 @@ Including another URLconf
 from django.urls import path
 
 from . import views
-from .views import LoadPDF
 
 urlpatterns = [
-    path('', views.ViewerPDF.as_view()),
-    path('load', views.LoadPDF.as_view(), name="load_pdf"),
+    path('', views.Catalog.as_view()),
+    path('load', views.LoadURL.as_view(), name="load_url"),
+    path('viewer', views.Viewer.as_view(), name="viewer"),
 ]

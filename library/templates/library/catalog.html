@@ -1,0 +1,89 @@
+{% load static %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Blank Page - Brand</title>
+    <link rel="stylesheet" href="{% static 'library/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'library/fonts/fontawesome-all.min.css' %}">
+    <script src="{% static 'library/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'library/js/jquery-3.6.0.min.js' %}"></script>
+    <script defer src="{% static 'library/js/theme.js' %}"></script>
+
+    <link rel="stylesheet" href="{% static 'library/css/bstreeview.css' %}">
+    <script src="{% static 'library/js/bstreeview.js' %}"></script>
+
+    <link rel="stylesheet" href="{% static 'library/css/reader.css' %}">
+    <script defer src="{% static 'library/js/reader.js' %}"></script>
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0">
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                    <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-laugh-wink"></i></div>
+                    <div class="sidebar-brand-text mx-3"><span>Brand</span></div>
+                </a>
+                <form class="d-none d-sm-inline-block navbar-search">
+                    <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="Search for ..."><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
+                    {% csrf_token %}
+                </form>
+                <div id="tree"></div>
+            </div>
+        </nav>
+        <div style="position: relative;" id="content-wrapper">
+            <iframe id="content"></iframe>
+        </div>
+    </div>
+</body>
+<script>
+    $(function () {
+        var json = [
+            {% for periodic in periodical.all %}
+            {
+                text: "{{ periodic.name }}",
+                icon: "",
+                nodes: [
+                    {% for year, months in periodic.get_struct.items %}
+                    {
+                        text: "{{ year }}",
+                        nodes: [
+                            {% for month, instances in months.items %}
+                            {
+                                icon: "",
+                                text: "{{ month }}",
+                                nodes: [
+                                    {% for instance in instances %}
+                                    {
+                                        id: "{{ instance.id }}",
+                                        class: "menu-item",
+                                        text: "{{ instance.shortname }}",
+                                    },
+                                    {% endfor %}
+                                ]
+                            },
+                            {% endfor %}
+                        ]
+                    },
+                    {% endfor %}
+                ]
+            },
+            {% endfor %}
+        ];
+
+        $('#tree').bstreeview({
+            data: json,
+            expandIcon: 'fa fa-angle-down fa-fw',
+            collapseIcon: 'fa fa-angle-right fa-fw',
+            indent: 1.00,
+            parentsMarginLeft: '1.00rem',
+            openNodeLinkOnNewTab: true
+        });
+    });
+
+</script>
+</html>

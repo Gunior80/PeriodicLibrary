@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from library.models import Periodical, Instance, Client, Address
+from library.models import Periodical, Instance, Client, Address, Statistic
 
 
 @admin.register(Periodical)
@@ -21,4 +21,8 @@ class ClientAdmin(admin.ModelAdmin):
 
 @admin.register(Address)
 class AddressAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Statistic)
+class StatisticAdmin(admin.ModelAdmin):
     pass
