@@ -33,7 +33,6 @@ class LoadURL(View):
             object = models.Instance.objects.get(id=id)
             response["url"] = object.file.url
             addr = utils.get_ip(request)
-            print(addr)
             if Address.is_client(addr):
                 client = Address.get_client(addr)
                 if request.session.get('newview', False):

@@ -77,7 +77,6 @@ class Client(models.Model):
         return self.statistics.get_or_create(client=self, periodical=periodic, date=dateformat())[0]
 
     def inc_visit(self, periodic):
-        print(self._getstat(periodic))
         stat = self._getstat(periodic)
         stat.visits += 1
         stat.save()
