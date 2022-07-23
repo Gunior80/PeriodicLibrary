@@ -22,17 +22,3 @@ function load_pdf(doc){
         }
     });
 }
-/*
-function resize(){
-    let htmlDoc = $('#content')[0].contentDocument ;
-    let oldsize = htmlDoc.getElementById("viewer").scrollHeight;
-    let timer = setInterval(() => {
-        let newsize = htmlDoc.getElementById("viewer").scrollHeight;
-        if (newsize != oldsize){
-            oldsize = newsize;
-            $('#content')[0].setAttribute("style","height:" + (newsize+33) + 'px');
-        }
-
-      }, 100);
-}
-*/

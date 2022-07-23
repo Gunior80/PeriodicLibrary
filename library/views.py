@@ -20,6 +20,7 @@ class Catalog(ListView):
 
     def get(self, request, *args, **kwargs):
         request.session['newview'] = True
+        request.session['viewed'] = []
         return super().get(self, request, *args, **kwargs)
 
 class LoadURL(View):
@@ -32,12 +33,15 @@ class LoadURL(View):
             object = models.Instance.objects.get(id=id)
             response["url"] = object.file.url
             addr = utils.get_ip(request)
+            print(addr)
             if Address.is_client(addr):
                 client = Address.get_client(addr)
                 if request.session.get('newview', False):
                     client.inc_visit(object.periodical) # "здесь реализовать инкрементирование посещения архива"
                     request.session['newview'] = False
-                client.inc_view(object.periodical) # "здесь реализовать инкрементирование просмотренных ресурсов архива"
+                if id not in request.session['viewed']:
+                    client.inc_view(object.periodical) # "здесь реализовать инкрементирование просмотренных ресурсов архива"
+                    request.session['viewed'].append(id)
         return HttpResponse(JsonResponse(response), content_type="application/json")
 
 

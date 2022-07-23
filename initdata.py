@@ -23,7 +23,7 @@ def parse(file):
     path = file.split('\\')
     return '.'.join(path[-1].split('.')[1:-2]) + '.' + path[-2]
 
-path = "D:\\Няръяна Вындер"
+path = "G:\\Няръяна Вындер"
 files = find_files(path, '.pdf')
 
 periodic = Periodical(name=os.path.basename(path))

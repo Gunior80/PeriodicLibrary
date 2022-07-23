@@ -2374,15 +2374,6 @@ function webViewerNamedAction(evt) {
       if (!PDFViewerApplication.supportsIntegratedFind) {
         PDFViewerApplication.findBar.toggle();
       }
-
-      break;
-
-    case "Print":
-      PDFViewerApplication.triggerPrinting();
-      break;
-
-    case "SaveAs":
-      webViewerSave();
       break;
   }
 }
@@ -2413,8 +2404,6 @@ function webViewerUpdateViewarea(evt) {
   }
 
   const href = PDFViewerApplication.pdfLinkService.getAnchorUrl(location.pdfOpenParams);
-  PDFViewerApplication.appConfig.toolbar.viewBookmark.href = href;
-  PDFViewerApplication.appConfig.secondaryToolbar.viewBookmarkButton.href = href;
   const currentPage = PDFViewerApplication.pdfViewer.getPageView(PDFViewerApplication.page - 1);
   const loading = currentPage?.renderingState !== _ui_utils.RenderingStates.FINISHED;
   PDFViewerApplication.toolbar.updateLoadingIndicatorState(loading);
@@ -2834,25 +2823,7 @@ function webViewerKeyDown(evt) {
     }
   }
 
-  if (cmd === 1 || cmd === 8) {
-    switch (evt.keyCode) {
-      case 83:
-        eventBus.dispatch("download", {
-          source: window
-        });
-        handled = true;
-        break;
 
-      case 79:
-        {
-          eventBus.dispatch("openfile", {
-            source: window
-          });
-          handled = true;
-        }
-        break;
-    }
-  }
 
   if (cmd === 3 || cmd === 10) {
     switch (evt.keyCode) {
@@ -13135,18 +13106,6 @@ class SecondaryToolbar {
       eventName: "presentationmode",
       close: true
     }, {
-      element: options.printButton,
-      eventName: "print",
-      close: true
-    }, {
-      element: options.downloadButton,
-      eventName: "download",
-      close: true
-    }, {
-      element: options.viewBookmarkButton,
-      eventName: null,
-      close: true
-    }, {
       element: options.firstPageButton,
       eventName: "firstpage",
       close: true
@@ -13225,16 +13184,7 @@ class SecondaryToolbar {
         mode: _ui_utils.SpreadMode.EVEN
       },
       close: true
-    }, {
-      element: options.documentPropertiesButton,
-      eventName: "documentproperties",
-      close: true
     }];
-    this.buttons.push({
-      element: options.openFileButton,
-      eventName: "openfile",
-      close: true
-    });
     this.items = {
       firstPage: options.firstPageButton,
       lastPage: options.lastPageButton,
@@ -13467,22 +13417,9 @@ class Toolbar {
       element: options.zoomOut,
       eventName: "zoomout"
     }, {
-      element: options.print,
-      eventName: "print"
-    }, {
       element: options.presentationModeButton,
       eventName: "presentationmode"
-    }, {
-      element: options.download,
-      eventName: "download"
-    }, {
-      element: options.viewBookmark,
-      eventName: null
     }];
-    this.buttons.push({
-      element: options.openFile,
-      eventName: "openfile"
-    });
     this.items = {
       numPages: options.numPages,
       pageNumber: options.pageNumber,
@@ -15275,49 +15212,6 @@ function renderProgress(index, total, l10n) {
   });
 }
 
-window.addEventListener("keydown", function (event) {
-  if (event.keyCode === 80 && (event.ctrlKey || event.metaKey) && !event.altKey && (!event.shiftKey || window.chrome || window.opera)) {
-    window.print();
-    event.preventDefault();
-
-    if (event.stopImmediatePropagation) {
-      event.stopImmediatePropagation();
-    } else {
-      event.stopPropagation();
-    }
-  }
-}, true);
-
-if ("onbeforeprint" in window) {
-  const stopPropagationIfNeeded = function (event) {
-    if (event.detail !== "custom" && event.stopImmediatePropagation) {
-      event.stopImmediatePropagation();
-    }
-  };
-
-  window.addEventListener("beforeprint", stopPropagationIfNeeded);
-  window.addEventListener("afterprint", stopPropagationIfNeeded);
-}
-
-let overlayPromise;
-
-function ensureOverlay() {
-  if (!overlayPromise) {
-    overlayManager = _app.PDFViewerApplication.overlayManager;
-
-    if (!overlayManager) {
-      throw new Error("The overlay manager has not yet been initialized.");
-    }
-
-    dialog ||= document.getElementById("printServiceDialog");
-    overlayPromise = overlayManager.register(dialog, true);
-    document.getElementById("printCancel").onclick = abort;
-    dialog.addEventListener("close", abort);
-  }
-
-  return overlayPromise;
-}
-
 _app.PDFPrintServiceFactory.instance = {
   supportsPrinting: true,
 
@@ -15465,20 +15359,12 @@ function getViewerConfiguration() {
       zoomIn: document.getElementById("zoomIn"),
       zoomOut: document.getElementById("zoomOut"),
       viewFind: document.getElementById("viewFind"),
-      openFile: document.getElementById("openFile"),
-      print: document.getElementById("print"),
       presentationModeButton: document.getElementById("presentationMode"),
-      download: document.getElementById("download"),
-      viewBookmark: document.getElementById("viewBookmark")
     },
     secondaryToolbar: {
       toolbar: document.getElementById("secondaryToolbar"),
       toggleButton: document.getElementById("secondaryToolbarToggle"),
       presentationModeButton: document.getElementById("secondaryPresentationMode"),
-      openFileButton: document.getElementById("secondaryOpenFile"),
-      printButton: document.getElementById("secondaryPrint"),
-      downloadButton: document.getElementById("secondaryDownload"),
-      viewBookmarkButton: document.getElementById("secondaryViewBookmark"),
       firstPageButton: document.getElementById("firstPage"),
       lastPageButton: document.getElementById("lastPage"),
       pageRotateCwButton: document.getElementById("pageRotateCw"),
@@ -15492,7 +15378,7 @@ function getViewerConfiguration() {
       spreadNoneButton: document.getElementById("spreadNone"),
       spreadOddButton: document.getElementById("spreadOdd"),
       spreadEvenButton: document.getElementById("spreadEven"),
-      documentPropertiesButton: document.getElementById("documentProperties")
+
     },
     sidebar: {
       outerContainer: document.getElementById("outerContainer"),
