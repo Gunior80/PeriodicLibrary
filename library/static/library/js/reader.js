@@ -16,16 +16,12 @@ function set_events() {
     }
 }
 
-$( document ).ready(function() {
-    set_events();
-});
-
 function load_pdf(doc){
     let token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
     let msg = { csrfmiddlewaretoken: token, document: doc };
     $.ajax({
         type: 'POST',
-        url: "/load",
+        url: "/load_url",
         data: msg,
         success: function(data) {
             $('#content')[0].src = '/viewer?file='+data["url"];
@@ -36,11 +32,9 @@ function load_pdf(doc){
     });
 }
 
-function search(){
+function show_menu(json) {
     $("#nav-list").empty();
     $("#nav-list").removeData();
-    var json = [{text: "{{ periodic.name }}",nodes: [{text: "{{ year }}",nodes: [{text: "{{ month }}",nodes: [{id: "{{ instance.id }}",class: "menu-item",text: "{{ instance.shortname }}",},]},]},]},];
-
     $('#nav-list').bstreeview({
         data: json,
         expandIcon: 'fa fa-angle-down fa-fw',
@@ -50,4 +44,29 @@ function search(){
         openNodeLinkOnNewTab: true
     });
     set_events();
+}
+
+function load_menu(periodic, string){
+    let token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+    let msg = { csrfmiddlewaretoken: token, periodical: periodic, str: string};
+    $.ajax({
+        type: 'POST',
+        url: "/load_menu",
+        data: msg,
+        success: function(data) {
+            show_menu(data['menu']);
+        },
+        error:  function(xhr, str){
+            alert(str);
+        }
+    });
+}
+
+$( document ).ready(function() {
+    load_menu(1,"");
+    set_events();
+});
+
+function search(){
+
 }

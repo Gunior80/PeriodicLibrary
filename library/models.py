@@ -2,13 +2,17 @@ import os
 from django.db import models
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
+from django.template.defaultfilters import safe
 from django.utils.translation import gettext_lazy as _
 # Create your models here.
+from pytils.translit import slugify
+
 from library.utils import dateformat
 
 
 class Periodical(models.Model):
     name = models.CharField(verbose_name=_("Name"), max_length=64)
+    slug = models.SlugField(default='', unique=True)
 
     class Meta:
         verbose_name = _("Periodical")
@@ -17,21 +21,29 @@ class Periodical(models.Model):
     def __str__(self):
         return self.name
 
-    def get_struct(self, queryset=None):
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
+
+    def json_struct(self, queryset=None):
         if queryset:
-            data = queryset
+            instances = queryset
         else:
-            data = self.instances.all()
-        struct = {}
-        for obj in data:
-            year = obj.date.year
-            month = _(obj.date.strftime('%B'))
-            if year not in struct:
-                struct[year] = {}
-            if month not in struct[year]:
-                struct[year][month] = []
-            struct[year][month].append(obj)
-        return struct
+            instances = self.instances.all()
+        json_data = []
+        for instance in instances:
+            year = instance.date.year
+            month = _(instance.date.strftime('%B'))
+            if year not in [val.get('text') for val in json_data]:
+                json_data.append({'text': year, 'nodes': [{'text': month, 'nodes': [{'id': instance.id, 'class': 'menu-item', 'text': instance.shortname()}]}]})
+            else:
+                year_count = [count for count, val in enumerate(json_data) if val['text'] == year][0]
+                if month not in [val.get('text') for val in json_data[year_count]['nodes']]:
+                    json_data[year_count]['nodes'].append({'text': month, 'nodes': [{'id': instance.id, 'class': 'menu-item', 'text': instance.shortname()}]})
+                else:
+                    month_count = [count for count, val in enumerate(json_data[year_count]['nodes']) if val['text'] == month][0]
+                    json_data[year_count]['nodes'][month_count]['nodes'].append({'id': instance.id, 'class': 'menu-item', 'text': instance.shortname()})
+        return json_data
 
 
 def periodical_save_path(instance, filename):

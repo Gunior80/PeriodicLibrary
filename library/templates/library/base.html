@@ -1,0 +1,17 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Архив периодики{% block tittle %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'library/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'library/fonts/fontawesome-all.min.css' %}">
+    <script src="{% static 'library/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'library/js/jquery-3.6.0.min.js' %}"></script>
+    {% block head %}{% endblock %}
+</head>
+<body>
+    {% block body %}{% endblock %}
+</body>
+</html>
