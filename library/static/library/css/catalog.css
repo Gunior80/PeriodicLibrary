@@ -15,13 +15,16 @@ body {
     flex: 0 1 auto;
 }
 
+#name {
+    color: Lavender;
+}
+
 #nav-list {
     flex: 1 1 auto;
     overflow-y: scroll;
     width: 100%;
     scrollbar-width: thin;
     scrollbar-color: #243A86 #3F65EB;
-
 }
 
 .bstreeview .list-group-item:hover {

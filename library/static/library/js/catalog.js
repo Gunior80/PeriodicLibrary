@@ -3,7 +3,17 @@ function colorize_menu(elements, curent){
     for (var i = 0; i < elements.length; i++) {
         elements[i].style.backgroundColor = null;
     }
-    curent.style.backgroundColor = "green";
+    curent.style.backgroundColor = "#243FFF";
+}
+
+function wait(bool){
+    let el = $("#wait");
+    if (bool) {
+        el.show();
+    }
+    else {
+        el.hide();;
+    }
 }
 
 function set_events() {
@@ -39,10 +49,11 @@ function show_menu(json) {
         data: json,
         expandIcon: 'fa fa-angle-down fa-fw',
         collapseIcon: 'fa fa-angle-right fa-fw',
-        indent: 1.00,
-        parentsMarginLeft: '1.00rem',
+        indent: 1.25,
+        parentsMarginLeft: '1.5rem',
         openNodeLinkOnNewTab: true
     });
+    wait(false);
     set_events();
 }
 
@@ -63,10 +74,15 @@ function load_menu(periodic, string){
 }
 
 $( document ).ready(function() {
-    load_menu(1,"");
+    wait(true);
+    $('form').submit(function(e) {
+        wait(true);
+        load_menu($('#periodical').value,"");
+        return false;
+    });
+    load_menu($('#periodical').value,"");
     set_events();
 });
 
-function search(){
 
-}
+

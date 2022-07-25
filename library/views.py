@@ -1,28 +1,16 @@
-import base64
-
-from django.conf import settings
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
-from django.template.defaultfilters import safe
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import ListView, TemplateView, DetailView
-
-# Create your views here.
 from library import models, utils
 from library.models import Address
 
 
-class Catalog(ListView):
+class Index(ListView):
     model = models.Periodical
-    context_object_name = 'periodical'
-    template_name = 'library/catalog.html'
-
-    def get(self, request, *args, **kwargs):
-        request.session['newview'] = True
-        request.session['viewed'] = []
-        return super().get(self, request, *args, **kwargs)
+    context_object_name = 'periodicals'
+    template_name = 'library/index.html'
 
 
 class PeriodicView(DetailView):
@@ -62,12 +50,12 @@ class LoadMenu(View):
 
 
     def post(self, request, **kwargs):
-        response = {"data": None}
+        response = {"menu": []}
         request_periodical = request.POST.get('periodical')
         request_string = request.POST.get('str')
         periodical = models.Periodical.objects.first()
-        response = {"menu": periodical.json_struct()}
-        print(response)
+        if periodical:
+            response = {"menu": periodical.json_struct()}
         return HttpResponse(JsonResponse(response, safe=False), content_type="application/json")
 
 

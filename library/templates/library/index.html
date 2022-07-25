@@ -1,0 +1,49 @@
+{% extends "library/base.html" %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'library/css/bstreeview.css' %}">
+    <script src="{% static 'library/js/bstreeview.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'library/css/catalog.css' %}">
+{% endblock %}
+
+{% block body %}
+    <div id="wrapper">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0">
+            <div id="nav-container" class="container-fluid d-flex flex-column p-0">
+                <div id="nav-header">
+                    <img src="{% static 'library/img/logo.gif' %}" width="100%" alt="image"></img>
+                    <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                        <div class="sidebar-brand-text mx-3"><span>Архив периодики</span></div>
+                    </a>
+                </div>
+                    <div id="nav-list">
+                </div>
+            </div>
+        </nav>
+        <div id="content-wrapper" class="d-flex justify-content-center align-items-center">
+            <img src="{% static 'library/img/index.gif' %}" alt="image"></img>
+        </div>
+    </div>
+<script>
+    var tree = [
+    {% for periodical in periodicals.all %}
+        {
+            text: "{{ periodical.name }}",
+            class: "periodic-item",
+            icon: "fa fa-folder",
+            href: "{% url 'periodical' slug=periodical.slug %}",
+        },
+    {% endfor %}
+    ];
+
+    $('#nav-list').bstreeview({
+        data: tree,
+        expandIcon: 'fa fa-angle-down fa-fw',
+        collapseIcon: 'fa fa-angle-right fa-fw',
+        indent: 1.25,
+        parentsMarginLeft: '1.25rem',
+        openNodeLinkOnNewTab: false
+    });
+</script>
+{% endblock %}

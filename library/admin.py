@@ -1,11 +1,10 @@
 from django.contrib import admin
-
-# Register your models here.
 from library.models import Periodical, Instance, Client, Address, Statistic
 
 
 @admin.register(Periodical)
 class PeriodicalAdmin(admin.ModelAdmin):
+
     pass
 
 
@@ -14,14 +13,14 @@ class InstanceAdmin(admin.ModelAdmin):
     pass
 
 
+class AddressAdmin(admin.TabularInline):
+    model = Address
+    extra = 0
+
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
-    pass
+    inlines = [AddressAdmin, ]
 
-
-@admin.register(Address)
-class AddressAdmin(admin.ModelAdmin):
-    pass
 
 @admin.register(Statistic)
 class StatisticAdmin(admin.ModelAdmin):

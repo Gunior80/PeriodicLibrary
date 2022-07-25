@@ -18,8 +18,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.Catalog.as_view()),
-    path('<slug:slug>/', views.PeriodicView.as_view()),
+    path('', views.Index.as_view()),
+    path('<slug:slug>/', views.PeriodicView.as_view(), name="periodical"),
     path('load_url', views.LoadURL.as_view(), name="load_url"),
     path('load_menu', views.LoadMenu.as_view(), name="load_menu"),
     path('viewer', views.Viewer.as_view(), name="viewer"),

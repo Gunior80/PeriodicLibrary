@@ -2397,10 +2397,10 @@ a:focus > .thumbnail > .thumbnailSelectionRing,
   color: var(--treeitem-hover-color);
 }
 
-
 ::-moz-selection {
   background: rgba(0, 0, 255, 0.3);
 }
+
 ::selection {
   background: rgba(0, 0, 255, 0.3);
 }
