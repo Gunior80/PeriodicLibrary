@@ -21,8 +21,8 @@
                     </a>
                     <div id="name" class="d-flex justify-content-center align-items-center">{{ periodical.name }}</div>
                     <form class="d-flex justify-content-center align-items-center navbar-search">
-                        <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="Поиск">
-                            <input hidden id="periodical" value="{{ periodical.id }}"/>
+                        <div class="input-group"><input id="search-string" class="bg-light form-control border-0 small" type="text" placeholder="Поиск">
+                            <input type="hidden" id="periodic" value="{{ periodical.id }}"/>
                             {% csrf_token %}
                             <button class="btn btn-primary py-0" type="submit"><i class="fas fa-search"></i>
                             </button>

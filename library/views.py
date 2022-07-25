@@ -48,12 +48,14 @@ class LoadURL(View):
 class LoadMenu(View):
     http_method_names = ['post']
 
-
     def post(self, request, **kwargs):
         response = {"menu": []}
+        print(request.POST)
         request_periodical = request.POST.get('periodical')
         request_string = request.POST.get('str')
-        periodical = models.Periodical.objects.first()
+        periodical = models.Periodical.objects.filter(id=request_periodical).first()
+        if request_string:
+            print(111);
         if periodical:
             response = {"menu": periodical.json_struct()}
         return HttpResponse(JsonResponse(response, safe=False), content_type="application/json")
@@ -62,3 +64,5 @@ class LoadMenu(View):
 @method_decorator(xframe_options_exempt, name='dispatch')
 class Viewer(TemplateView):
     template_name = 'library/viewer.html'
+
+#django-taggit

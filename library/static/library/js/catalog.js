@@ -37,7 +37,7 @@ function load_pdf(doc){
             $('#content')[0].src = '/viewer?file='+data["url"];
         },
         error:  function(xhr, str){
-            alert(str);
+            console.log(str);
         }
     });
 }
@@ -68,19 +68,21 @@ function load_menu(periodic, string){
             show_menu(data['menu']);
         },
         error:  function(xhr, str){
-            alert(str);
+            console.log(str);
         }
     });
 }
 
 $( document ).ready(function() {
+    $('#search-string').val('');
     wait(true);
     $('form').submit(function(e) {
         wait(true);
-        load_menu($('#periodical').value,"");
+        load_menu($('#periodic').val(), $('#search-string').val());
+        $('#search-string').val('');
         return false;
     });
-    load_menu($('#periodical').value,"");
+    load_menu($('#periodic').val(), $('#search-string').val());
     set_events();
 });
 
