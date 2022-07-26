@@ -50,14 +50,11 @@ class LoadMenu(View):
 
     def post(self, request, **kwargs):
         response = {"menu": []}
-        print(request.POST)
         request_periodical = request.POST.get('periodical')
         request_string = request.POST.get('str')
         periodical = models.Periodical.objects.filter(id=request_periodical).first()
-        if request_string:
-            print(111);
         if periodical:
-            response = {"menu": periodical.json_struct()}
+            response = {"menu": periodical.json_struct(request_string)}
         return HttpResponse(JsonResponse(response, safe=False), content_type="application/json")
 
 

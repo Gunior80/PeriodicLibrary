@@ -43,8 +43,7 @@ function load_pdf(doc){
 }
 
 function show_menu(json) {
-    $("#nav-list").empty();
-    $("#nav-list").removeData();
+
     $('#nav-list').bstreeview({
         data: json,
         expandIcon: 'fa fa-angle-down fa-fw',
@@ -77,6 +76,8 @@ $( document ).ready(function() {
     $('#search-string').val('');
     wait(true);
     $('form').submit(function(e) {
+        $("#nav-list").empty();
+        $("#nav-list").removeData();
         wait(true);
         load_menu($('#periodic').val(), $('#search-string').val());
         $('#search-string').val('');

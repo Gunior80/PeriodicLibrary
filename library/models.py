@@ -18,11 +18,17 @@ class Periodical(models.Model):
         self.slug = slugify(self.name)
         return super().save(*args, **kwargs)
 
-    def json_struct(self, queryset=None):
-        if queryset:
-            instances = queryset
+
+    def _get_search_results(self, str):
+        instances = None
+        if str:
+            instances = self.instances.all()
         else:
             instances = self.instances.all()
+        return instances
+
+    def json_struct(self, str):
+        instances = self._get_search_results(str)
         json_data = []
         for instance in instances:
             year = instance.date.year
@@ -81,7 +87,7 @@ class Instance(models.Model):
         ordering = ["-date", ]
 
     def __str__(self):
-        return self.file.name
+        return self.shortname()
 
 
 @receiver(pre_delete, sender=Instance)
