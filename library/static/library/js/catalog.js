@@ -1,12 +1,12 @@
 
-function colorize_menu(elements, curent){
+function colorize_menu(elements, curent) {
     for (var i = 0; i < elements.length; i++) {
         elements[i].style.backgroundColor = null;
     }
     curent.style.backgroundColor = "#243FFF";
 }
 
-function wait(bool){
+function wait(bool) {
     let el = $("#wait");
     if (bool) {
         el.show();
@@ -26,7 +26,7 @@ function set_events() {
     }
 }
 
-function load_pdf(doc){
+function load_pdf(doc) {
     let token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
     let msg = { csrfmiddlewaretoken: token, document: doc };
     $.ajax({
@@ -56,7 +56,7 @@ function show_menu(json) {
     set_events();
 }
 
-function load_menu(periodic, string){
+function load_menu(periodic, string) {
     let token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
     let msg = { csrfmiddlewaretoken: token, periodical: periodic, str: string};
     $.ajax({
@@ -85,6 +85,18 @@ $( document ).ready(function() {
     });
     load_menu($('#periodic').val(), $('#search-string').val());
     set_events();
+
+    // https://www.youtube.com/watch?v=Ch85i8yNT6E
+    // https://github.com/trevoreyre/autocomplete/tree/master/packages/autocomplete-js
+    countries = ['1111', '11112', '11113', '11114', '222222'];
+    new Autocomplete('#autocomplete', {
+    search: input => {
+        if (input.length < 1) { return [] }
+            return countries.filter(country => {
+        return country.toLowerCase().startsWith(input.toLowerCase())
+    })
+  }
+})
 });
 
 

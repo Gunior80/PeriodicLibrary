@@ -63,3 +63,15 @@ class Viewer(TemplateView):
     template_name = 'library/viewer.html'
 
 #django-taggit
+
+class SearchTags(View):
+    http_method_names = ['post']
+
+    def post(self, request, **kwargs):
+        response = {"menu": []}
+        request_periodical = request.POST.get('periodical')
+        request_string = request.POST.get('str')
+        periodical = models.Periodical.objects.filter(id=request_periodical).first()
+        if periodical:
+            response = {"menu": periodical.json_struct(request_string)}
+        return HttpResponse(JsonResponse(response, safe=False), content_type="application/json")

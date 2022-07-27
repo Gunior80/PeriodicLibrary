@@ -4,6 +4,8 @@ from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from pytils.translit import slugify
+from taggit.managers import TaggableManager
+
 from library.utils import dateformat
 
 
@@ -70,6 +72,7 @@ class Instance(models.Model):
                                    related_name="instances", on_delete=models.CASCADE)
     date = models.DateField(verbose_name=_("Date"))
     file = models.FileField(verbose_name=_("Instance"), upload_to=periodical_save_path)
+    tags = TaggableManager(blank=True)
 
     def shortname(self):
         return '.'.join(os.path.basename(self.file.name).split('.')[:-1])

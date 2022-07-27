@@ -20,7 +20,8 @@ from . import views
 urlpatterns = [
     path('', views.Index.as_view()),
     path('<slug:slug>/', views.PeriodicView.as_view(), name="periodical"),
+    path('search', views.SearchTags.as_view(), name="search"),
     path('load_url', views.LoadURL.as_view(), name="load_url"),
     path('load_menu', views.LoadMenu.as_view(), name="load_menu"),
-    path('viewer', views.Viewer.as_view(), name="viewer"),
+    path('viewer/', views.Viewer.as_view(), name="viewer"),
 ]
