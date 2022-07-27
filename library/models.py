@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from pytils.translit import slugify
 from taggit.managers import TaggableManager
+from taggit.models import Tag
 
 from library.utils import dateformat
 
@@ -16,15 +17,21 @@ class Periodical(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = _("Periodical")
+        verbose_name_plural = _("Periodicals")
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         return super().save(*args, **kwargs)
 
-
     def _get_search_results(self, str):
         instances = None
         if str:
-            instances = self.instances.all()
+            tags = Tag.objects.filter(instance__periodical=self,
+                                      name__in=str.split(' ')).values_list('name', flat=True)
+            instances = self.instances.filter(tags__name__in=tags)
+            print(instances)
         else:
             instances = self.instances.all()
         return instances
@@ -57,10 +64,6 @@ class Periodical(models.Model):
                                                                                  'text': instance.shortname()})
         return json_data
 
-        class Meta:
-            verbose_name = _("Periodical")
-            verbose_name_plural = _("Periodicals")
-
 
 def periodical_save_path(instance, filename):
     return 'library/{0}/{1}/{2}.{3}'.format(instance.periodical.name, instance.date.year,
@@ -80,7 +83,7 @@ class Instance(models.Model):
     def save(self, *args, **kwargs):
         if self.pk:
             old_self = Instance.objects.get(pk=self.pk)
-            if old_self.file and self.image != old_self.file:
+            if old_self.file and self.file != old_self.file:
                 old_self.file.delete(False)
         return super(Instance, self).save(*args, **kwargs)
 
