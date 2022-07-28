@@ -6,10 +6,11 @@
 {% block head %}
     <link rel="stylesheet" href="{% static 'library/css/bstreeview.css' %}">
     <script src="{% static 'library/js/bstreeview.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'library/jquery-ui/jquery-ui.min.css' %}">
+    <script src="{% static 'library/jquery-ui/jquery-ui.min.js' %}"></script>
     <link rel="stylesheet" href="{% static 'library/css/catalog.css' %}">
     <script defer src="{% static 'library/js/catalog.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'library/css/autocomplete.css' %}">
-    <script src="{% static 'library/js/autocomplete.min.js' %}"></script>
+
 {% endblock %}
 
 {% block body %}
@@ -23,9 +24,8 @@
                     </a>
                     <div id="name" class="d-flex justify-content-center align-items-center">{{ periodical.name }}</div>
                     <form class="d-flex justify-content-center align-items-center navbar-search">
-                        <div id="autocomplete" class="autocomplete input-group">
+                        <div class="input-group">
                             <input id="search-string" class="bg-light form-control border-0 small" type="text" placeholder="Поиск">
-                            <ul class="autocomplete-result-list "></ul>
                             <input type="hidden" id="periodic" value="{{ periodical.id }}"/>
                             {% csrf_token %}
                             <button class="btn btn-primary py-0" type="submit"><i class="fas fa-search"></i></button>

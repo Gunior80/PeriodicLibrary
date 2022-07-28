@@ -1,3 +1,4 @@
+var full_json;
 
 function colorize_menu(elements, curent) {
     for (var i = 0; i < elements.length; i++) {
@@ -47,33 +48,40 @@ function library_post(options) {
     let addr, action;
     switch (options['action'])
     {
-       case "pdf":
-           addr = "/load_url";
-           msg = Object.assign({}, msg, {'document': options['document']});
-           action = function(data) {
+        case "pdf":
+            addr = "/load_url";
+            msg = Object.assign({}, msg, {'document': options['document']});
+            action = function(data) {
                 $('#content')[0].src = '/viewer?file='+data["url"];
-           };
-           send(msg, addr, action);
-           break;
-       case "menu":
-           addr = "/load_menu";
-           msg = Object.assign({}, msg, {'periodic': options['periodic'], "search-string": options['search-string']});
-           action = function(data) {
+            };
+            send(msg, addr, action);
+            break;
+        case "menu":
+            if (full_json && !options['search-string']) {
+                show_menu(full_json);
+                break;
+            }
+            addr = "/load_menu";
+            msg = Object.assign({}, msg, {'periodic': options['periodic'], "search-string": options['search-string']});
+            action = function(data) {
+                if (!options['search-string']) {
+                    full_json = data;
+                }
                 show_menu(data);
-           };
-           send(msg, addr, action);
-           break;
-       case "autocomplete":
-           addr = "/load_autocomplete";
-           msg = Object.assign({}, msg, {'periodic': options['periodic']});
-           action = function(data) {
+            };
+            send(msg, addr, action);
+            break;
+        case "autocomplete":
+            addr = "/load_autocomplete";
+            msg = Object.assign({}, msg, {'periodic': options['periodic']});
+            action = function(data) {
                 init_autocomplete(data);
-           };
-           send(msg, addr, action);
-           break;
-       default:
-           alert('Error');
-           break;
+            };
+            send(msg, addr, action);
+            break;
+        default:
+            alert('Error');
+            break;
     }
 }
 
@@ -91,14 +99,39 @@ function show_menu(json) {
 }
 
 function init_autocomplete(menuitems) {
-    new Autocomplete('#autocomplete', {
-        search: input => {
-            if (input.length < 1) { return [] }
-                return menuitems.filter(menuitem => {
-                    return menuitem.toLowerCase().startsWith(input.toLowerCase())
-                })
+    var availableTags = menuitems;
+
+    function split( val ) {
+        return val.split( /,\s*/ );
+    }
+    function extractLast( term ) {
+        return split( term ).pop();
+    }
+
+    $( "#search-string" ).on( "keydown", function( event ) {
+        if ( event.keyCode === $.ui.keyCode.TAB &&
+        $( this ).autocomplete( "instance" ).menu.active ) {
+            event.preventDefault();
         }
     })
+    .autocomplete({
+        minLength: 0,
+        source: function( request, response ) {
+            response( $.ui.autocomplete.filter(
+            availableTags, extractLast( request.term ) ) );
+        },
+        focus: function() {
+            return false;
+        },
+        select: function( event, ui ) {
+            var terms = split( this.value );
+            terms.pop();
+            terms.push( ui.item.value );
+            terms.push( "" );
+            this.value = terms.join( ", " );
+            return false;
+        }
+    });
 }
 
 $( document ).ready(function() {

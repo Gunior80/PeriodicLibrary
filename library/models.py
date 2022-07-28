@@ -1,11 +1,10 @@
 import os
 from django.db import models
-from django.db.models.signals import pre_delete
+from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from pytils.translit import slugify
 from taggit.managers import TaggableManager
-from taggit.models import Tag
 
 from library.utils import dateformat
 
@@ -25,19 +24,21 @@ class Periodical(models.Model):
         self.slug = slugify(self.name)
         return super().save(*args, **kwargs)
 
-    def _get_search_results(self, str):
-        instances = None
-        if str:
-            tags = Tag.objects.filter(instance__periodical=self,
-                                      name__in=str.split(' ')).values_list('name', flat=True)
-            instances = self.instances.filter(tags__name__in=tags)
-            print(instances)
+    def _get_search_results(self, search_terms):
+        if search_terms:
+            search_terms = search_terms.split(", ")
+            instances = self.instances.filter(tags__name__in=search_terms)
+            for term in search_terms:
+                if term == "":
+                    continue
+                instances &= self.instances.filter(tags__name=term)
+            instances = instances.distinct()
         else:
             instances = self.instances.all()
         return instances
 
-    def json_struct(self, str):
-        instances = self._get_search_results(str)
+    def json_struct(self, search_terms):
+        instances = self._get_search_results(search_terms)
         json_data = []
         for instance in instances:
             year = instance.date.year
@@ -94,6 +95,12 @@ class Instance(models.Model):
 
     def __str__(self):
         return self.shortname()
+
+
+@receiver(post_save, sender=Instance)
+def file_delete(sender, instance, **kwargs):
+    if not instance.tags.all():
+        instance.tags.add(instance.date.strftime('%Y'), str(_(instance.date.strftime('%B'))), instance.date.strftime("%d"))
 
 
 @receiver(pre_delete, sender=Instance)

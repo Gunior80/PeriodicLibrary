@@ -4,8 +4,9 @@ from django.views import View
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import ListView, TemplateView, DetailView
 from library import models, utils
-from library.models import Address, Instance
+from library.models import Address
 from taggit.models import Tag
+
 
 class Index(ListView):
     model = models.Periodical
@@ -26,6 +27,7 @@ class PeriodicView(DetailView):
 
 class LoadURL(View):
     http_method_names = ['post']
+
     def post(self, request, **kwargs):
         response = {"url": None}
         id = request.POST.get('document')
@@ -70,6 +72,5 @@ class LoadAutocomplete(View):
         request_periodical = request.POST.get('periodic')
         periodical = models.Periodical.objects.filter(id=request_periodical).first()
         if periodical:
-            response = list(Tag.objects.filter(instance__periodical=periodical).values_list('name', flat=True))
-        print(response)
+            response = list(Tag.objects.filter(instance__periodical=periodical).values_list('name', flat=True).distinct())
         return HttpResponse(JsonResponse(response, safe=False), content_type="application/json")
