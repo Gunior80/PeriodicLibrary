@@ -15,6 +15,8 @@ class PeriodicalAdmin(admin.ModelAdmin):
 
 @admin.register(Instance)
 class InstanceAdmin(admin.ModelAdmin):
+    search_fields = ['periodical__name', 'tags__name', ]
+    ordering = ('-date',)
     list_display = ['__str__', 'periodical', 'tags_list']
 
     def periodical(self, obj):
@@ -42,4 +44,18 @@ class ClientAdmin(admin.ModelAdmin):
 
 @admin.register(Statistic)
 class StatisticAdmin(admin.ModelAdmin):
-    pass
+    readonly_fields = ['periodical', 'client', 'date', 'visits', 'views']
+    search_fields = ['periodical__name', 'client__name', 'date', ]
+    ordering = ('-date', )
+    list_display = ['periodical', 'client', 'year', 'month', 'visits', 'views']
+
+    def year(self, obj):
+        return obj.date.strftime('%Y')
+
+    year.short_description = _("year")
+
+    def month(self, obj):
+        return _(obj.date.strftime('%B'))
+
+    month.short_description = _("month")
+
