@@ -74,7 +74,7 @@ const defaultOptions = {
     kind: OptionKind.VIEWER + OptionKind.PREFERENCE
   },
   disableHistory: {
-    value: false,
+    value: true,
     kind: OptionKind.VIEWER
   },
   disablePageLabels: {
@@ -13688,8 +13688,8 @@ class ViewHistory {
   }
 
   async _writeToStorage() {
-    const databaseStr = JSON.stringify(this.database);
-    localStorage.setItem("pdfjs.history", databaseStr);
+    //const databaseStr = JSON.stringify(this.database);
+    //localStorage.setItem("pdfjs.history", databaseStr);
   }
 
   async _readFromStorage() {
