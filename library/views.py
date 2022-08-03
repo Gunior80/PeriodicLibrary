@@ -6,7 +6,7 @@ from django.views.generic import ListView, TemplateView, DetailView
 from library import models, utils
 from library.models import Address
 from taggit.models import Tag
-
+from django.core.exceptions import PermissionDenied
 
 class Index(ListView):
     model = models.Periodical
@@ -35,6 +35,7 @@ class LoadURL(View):
             object = models.Instance.objects.get(id=id)
             response["url"] = object.file.url
             addr = utils.get_ip(request)
+            request.session['material'] = object.file.url
             if Address.is_client(addr):
                 client = Address.get_client(addr)
                 if request.session.get('newview', False):
@@ -74,3 +75,13 @@ class LoadAutocomplete(View):
         if periodical:
             response = list(Tag.objects.filter(instance__periodical=periodical).values_list('name', flat=True).distinct())
         return HttpResponse(JsonResponse(response, safe=False), content_type="application/json")
+
+
+def secure(request):
+    if request.session['material'] == request.META.get('HTTP_X_ORIGINAL_URI'):
+        print(request.session.get('material'))
+        print(request.META.get('HTTP_X_ORIGINAL_URI'))
+        request.session['material'] = None
+        return HttpResponse("")
+    else:
+        raise PermissionDenied()

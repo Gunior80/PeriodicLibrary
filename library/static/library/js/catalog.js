@@ -52,7 +52,7 @@ function library_post(options) {
             addr = "/load_url";
             msg = Object.assign({}, msg, {'document': options['document']});
             action = function(data) {
-                $('#content')[0].src = '/viewer?file='+data["url"];
+                $('#content')[0].src = '/viewer/?file='+data["url"];
             };
             send(msg, addr, action);
             break;

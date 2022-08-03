@@ -24,4 +24,5 @@ urlpatterns = [
     path('load_menu', views.LoadMenu.as_view(), name="load_menu"),
     path('load_url', views.LoadURL.as_view(), name="load_url"),
     path('load_autocomplete', views.LoadAutocomplete.as_view(), name="load_autocomplete"),
+    path('secure', views.secure, name="secure"),
 ]

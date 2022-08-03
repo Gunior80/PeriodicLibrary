@@ -38,8 +38,6 @@ class Periodical(models.Model):
         return instances
 
     def json_struct(self, search_terms):
-        import time
-        start_time = time.time()
         instances = self._get_search_results(search_terms)
         json_data = []
         for instance in instances:
@@ -65,7 +63,6 @@ class Periodical(models.Model):
                     json_data[year_count]['nodes'][month_count]['nodes'].append({'id': instance.id,
                                                                                  'class': 'menu-item',
                                                                                  'text': instance.shortname()})
-        print("--- %s seconds ---" % (time.time() - start_time))
         return json_data
 
 
