@@ -37,6 +37,7 @@ class AddressAdmin(admin.TabularInline):
     model = Address
     extra = 0
 
+
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
     inlines = [AddressAdmin, ]
@@ -58,4 +59,3 @@ class StatisticAdmin(admin.ModelAdmin):
         return _(obj.date.strftime('%B'))
 
     month.short_description = _("month")
-
