@@ -19,6 +19,16 @@ body {
     color: Lavender;
 }
 
+.ui-autocomplete {
+    left: 5px!important;
+    width: 217px!important;
+    height: 250px;
+    max-height: 250px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+
 #nav-list {
     flex: 1 1 auto;
     overflow-y: scroll;
