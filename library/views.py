@@ -8,6 +8,7 @@ from library.models import Address
 from taggit.models import Tag
 from django.core.exceptions import PermissionDenied
 
+
 class Index(ListView):
     model = models.Periodical
     context_object_name = 'periodicals'
@@ -79,8 +80,6 @@ class LoadAutocomplete(View):
 
 def secure(request):
     if request.session['material'] == request.META.get('HTTP_X_ORIGINAL_URI'):
-        print(request.session.get('material'))
-        print(request.META.get('HTTP_X_ORIGINAL_URI'))
         request.session['material'] = None
         return HttpResponse("")
     else:
