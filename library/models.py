@@ -1,12 +1,12 @@
 import os
 from django.db import models
-from django.db.models.signals import pre_delete, post_save
+from django.db.models.signals import pre_delete, post_save, post_delete
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from pytils.translit import slugify
 from taggit.managers import TaggableManager
-
 from library.utils import dateformat
+from django.core.cache import cache
 
 
 class Periodical(models.Model):
@@ -38,6 +38,10 @@ class Periodical(models.Model):
         return instances
 
     def json_struct(self, search_terms):
+        if not search_terms:
+            cache_obj = cache.get('full_json_'+self.slug)
+            if cache_obj:
+                return cache_obj
         instances = self._get_search_results(search_terms)
         json_data = []
         for instance in instances:
@@ -63,6 +67,8 @@ class Periodical(models.Model):
                     json_data[year_count]['nodes'][month_count]['nodes'].append({'id': instance.id,
                                                                                  'class': 'menu-item',
                                                                                  'text': instance.shortname()})
+        if not search_terms:
+            cache.set('full_json_'+self.slug, json_data, 60*60*24)
         return json_data
 
 
@@ -99,12 +105,16 @@ class Instance(models.Model):
 
 @receiver(post_save, sender=Instance)
 def file_delete(sender, instance, **kwargs):
+    cache.delete('full_json_'+instance.periodical.slug)
     if not instance.tags.all():
-        instance.tags.add(instance.date.strftime('%Y'), str(_(instance.date.strftime('%B'))), instance.date.strftime("%d"))
+        instance.tags.add(instance.date.strftime('%Y'),
+                          str(_(instance.date.strftime('%B'))),
+                          instance.date.strftime("%d"))
 
 
 @receiver(pre_delete, sender=Instance)
 def file_delete(sender, instance, **kwargs):
+    cache.delete('full_json_' + instance.periodical.slug)
     if instance.file.name:
         instance.file.delete(False)
 

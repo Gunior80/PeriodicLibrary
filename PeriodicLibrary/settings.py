@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-^kms!wbc&2+2(^719-jp+$%vj9^4t@$y=ecfo^k509se+ktm$v
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-if not os.environ.get('DJANGO_DEBUG') or None:
+DJANGO_DEBUG = int(os.environ.get('DJANGO_DEBUG') or 0)
+if DJANGO_DEBUG:
     DEBUG = True
     ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 else:
@@ -107,6 +108,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
