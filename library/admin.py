@@ -32,6 +32,9 @@ class InstanceAdmin(admin.ModelAdmin):
 
     periodical.short_description = _("list of tags")
 
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+
 
 class AddressAdmin(admin.TabularInline):
     model = Address

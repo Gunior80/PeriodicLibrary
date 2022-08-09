@@ -92,7 +92,8 @@ class Instance(models.Model):
             old_self = Instance.objects.get(pk=self.pk)
             if old_self.file and self.file != old_self.file:
                 old_self.file.delete(False)
-        return super(Instance, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
+        cache.delete('full_json_' + self.periodical.slug)
 
     class Meta:
         verbose_name = _("Periodical instance")
@@ -101,15 +102,6 @@ class Instance(models.Model):
 
     def __str__(self):
         return self.shortname()
-
-
-@receiver(post_save, sender=Instance)
-def file_delete(sender, instance, **kwargs):
-    cache.delete('full_json_'+instance.periodical.slug)
-    if not instance.tags.all():
-        instance.tags.add(instance.date.strftime('%Y'),
-                          str(_(instance.date.strftime('%B'))),
-                          instance.date.strftime("%d"))
 
 
 @receiver(pre_delete, sender=Instance)
