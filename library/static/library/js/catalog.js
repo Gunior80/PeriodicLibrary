@@ -22,6 +22,8 @@ function set_events() {
     for (var i = 0; i < elements.length; i++) {
         elements[i].onclick = function(e){
             colorize_menu(elements, this)
+            $('#cover').hide();
+            $('#content').show();
             library_post({
                 'action': 'pdf',
                 'document': this.id
@@ -158,11 +160,9 @@ $( document ).ready(function() {
         'action': 'autocomplete',
         'periodic': $('#periodic').val()
     });
+
+    $('#content').hide();
     set_events();
-
-    // https://www.youtube.com/watch?v=Ch85i8yNT6E
-    // https://github.com/trevoreyre/autocomplete/tree/master/packages/autocomplete-js
-
 });
 
 

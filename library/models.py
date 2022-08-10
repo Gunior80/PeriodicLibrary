@@ -1,6 +1,6 @@
-import os
+import pathlib
 from django.db import models
-from django.db.models.signals import pre_delete, post_save, post_delete
+from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from pytils.translit import slugify
@@ -9,9 +9,15 @@ from library.utils import dateformat
 from django.core.cache import cache
 
 
+def cover_save_path(instance, filename):
+    return 'library/{0}/cover{1}'.format(instance.name, pathlib.Path(filename).suffix)
+
+
 class Periodical(models.Model):
     name = models.CharField(verbose_name=_("Name"), max_length=64)
     slug = models.SlugField(default='', unique=True)
+    cover = models.ImageField(verbose_name=_("cover"), upload_to=cover_save_path,
+                              null=True)
 
     def __str__(self):
         return self.name
@@ -72,20 +78,20 @@ class Periodical(models.Model):
         return json_data
 
 
-def periodical_save_path(instance, filename):
-    return 'library/{0}/{1}/{2}.{3}'.format(instance.periodical.name, instance.date.year,
-                                            instance.date.strftime("%d.%m.%Y"), filename.split('.')[-1])
+def instance_save_path(instance, filename):
+    return 'library/{0}/{1}/{2}{3}'.format(instance.periodical.name, instance.date.year,
+                                           instance.date.strftime("%d.%m.%Y"), pathlib.Path(filename).suffix)
 
 
 class Instance(models.Model):
     periodical = models.ForeignKey(Periodical, verbose_name=_("Periodical name"),
                                    related_name="instances", on_delete=models.CASCADE)
     date = models.DateField(verbose_name=_("Date"))
-    file = models.FileField(verbose_name=_("Instance"), upload_to=periodical_save_path)
+    file = models.FileField(verbose_name=_("Instance"), upload_to=instance_save_path)
     tags = TaggableManager(blank=True)
 
     def shortname(self):
-        return '.'.join(os.path.basename(self.file.name).split('.')[:-1])
+        return pathlib.Path(self.file.name).stem
 
     def save(self, *args, **kwargs):
         if self.pk:
