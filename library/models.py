@@ -5,8 +5,9 @@ from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from pytils.translit import slugify
 from taggit.managers import TaggableManager
-from library.utils import dateformat
 from django.core.cache import cache
+import datetime as dt
+import django.utils.timezone as tz
 
 
 def cover_save_path(instance, filename):
@@ -121,7 +122,7 @@ class Client(models.Model):
     name = models.CharField(verbose_name=_("Name"), max_length=64)
 
     def _getstat(self, periodic):
-        return self.statistics.get_or_create(client=self, periodical=periodic, date=dateformat())[0]
+        return self.statistics.get_or_create(client=self, periodical=periodic, date=dt.date.today())[0]
 
     def inc_visit(self, periodic):
         stat = self._getstat(periodic)
@@ -167,7 +168,7 @@ class Statistic(models.Model):
                                related_name="statistics", on_delete=models.CASCADE)
     periodical = models.ForeignKey(Periodical, verbose_name=_("Periodical name"),
                                    related_name="statistics", on_delete=models.CASCADE)
-    date = models.DateField(verbose_name=_("Date"), default=dateformat)
+    date = models.DateField(verbose_name=_("Date"), default=tz.now)
     visits = models.PositiveIntegerField(verbose_name=_('Visits'), default=0, blank=False, null=False)
     views = models.PositiveIntegerField(verbose_name=_('Views'), default=0, blank=False, null=False)
 
