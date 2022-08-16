@@ -74,7 +74,8 @@ class LoadAutocomplete(View):
         request_periodical = request.POST.get('periodic')
         periodical = models.Periodical.objects.filter(id=request_periodical).first()
         if periodical:
-            response = list(Tag.objects.filter(instance__periodical=periodical).values_list('name', flat=True).distinct())
+            tags = Tag.objects.filter(instance__periodical=periodical).values_list('name', flat=True).distinct()
+            response = list(tags)
         return HttpResponse(JsonResponse(response, safe=False), content_type="application/json")
 
 

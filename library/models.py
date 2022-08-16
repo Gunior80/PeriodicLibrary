@@ -8,6 +8,8 @@ from taggit.managers import TaggableManager
 from django.core.cache import cache
 import datetime as dt
 import django.utils.timezone as tz
+import calendar
+from django.db.models import Sum
 
 
 def cover_save_path(instance, filename):
@@ -25,7 +27,7 @@ class Periodical(models.Model):
 
     class Meta:
         verbose_name = _("Periodical")
-        verbose_name_plural = _("Periodicals")
+        verbose_name_plural = "    " + str(_("Periodicals"))
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -78,6 +80,28 @@ class Periodical(models.Model):
             cache.set('full_json_'+self.slug, json_data, 60*60*24)
         return json_data
 
+    def get_statistic(self, client=None):
+        if client:
+            stats = self.statistics.filter(client=client)
+        stats = self.statistics.all()
+        data = dict([(x['date__year'], {}) for x in stats.values('date__year').distinct()])
+
+        for year in data.keys():
+            data[year][_('Visits')] = stats.filter(date__year=year).aggregate(total=Sum('visits'))['total']
+            data[year][_('Views')] = stats.filter(date__year=year).aggregate(total=Sum('views'))['total']
+            data[year]['months'] = {}
+            months = dict([(_(calendar.month_name[x['date__month']]), {'num': x['date__month']})
+                           for x in stats.filter(date__year=year).values('date__month').distinct()])
+            for month in months.keys():
+                data[year]['months'][month] = \
+                    {_('Visits'): stats.filter(date__year=year,
+                                               date__month=months[month]['num']).aggregate(total=Sum('visits'))['total']
+                     }
+                data[year]['months'][month][_('Views')] = \
+                    stats.filter(date__year=year,
+                                 date__month=months[month]['num']).aggregate(total=Sum('views'))['total']
+        return data
+
 
 def instance_save_path(instance, filename):
     return 'library/{0}/{1}/{2}{3}'.format(instance.periodical.name, instance.date.year,
@@ -85,7 +109,7 @@ def instance_save_path(instance, filename):
 
 
 class Instance(models.Model):
-    periodical = models.ForeignKey(Periodical, verbose_name=_("Periodical name"),
+    periodical = models.ForeignKey(Periodical, verbose_name=_("Periodical"),
                                    related_name="instances", on_delete=models.CASCADE)
     date = models.DateField(verbose_name=_("Date"))
     file = models.FileField(verbose_name=_("Instance"), upload_to=instance_save_path)
@@ -103,8 +127,8 @@ class Instance(models.Model):
         cache.delete('full_json_' + self.periodical.slug)
 
     class Meta:
-        verbose_name = _("Periodical instance")
-        verbose_name_plural = _("Periodical instances")
+        verbose_name = _("Instance")
+        verbose_name_plural = "   " + str(_("Instances"))
         ordering = ["-date", ]
 
     def __str__(self):
@@ -139,7 +163,7 @@ class Client(models.Model):
 
     class Meta:
         verbose_name = _("Client")
-        verbose_name_plural = _("Clients")
+        verbose_name_plural = "  " + str(_("Clients"))
 
 
 class Address(models.Model):
@@ -166,7 +190,7 @@ class Address(models.Model):
 class Statistic(models.Model):
     client = models.ForeignKey(Client, verbose_name=_("Client"),
                                related_name="statistics", on_delete=models.CASCADE)
-    periodical = models.ForeignKey(Periodical, verbose_name=_("Periodical name"),
+    periodical = models.ForeignKey(Periodical, verbose_name=_("Periodical"),
                                    related_name="statistics", on_delete=models.CASCADE)
     date = models.DateField(verbose_name=_("Date"), default=tz.now)
     visits = models.PositiveIntegerField(verbose_name=_('Visits'), default=0, blank=False, null=False)
@@ -177,4 +201,4 @@ class Statistic(models.Model):
 
     class Meta:
         verbose_name = _("Statistic")
-        verbose_name_plural = _("Statistics")
+        verbose_name_plural = " " + str(_("Statistics"))
