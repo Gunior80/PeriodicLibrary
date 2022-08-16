@@ -99,10 +99,16 @@ class PeriodicStatsAdmin(admin.TabularInline):
 
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
+    list_display = ['name', 'addresses']
     inlines = [AddressAdmin, ]
 
+    def addresses(self, obj):
+        return ", ".join([x['ipaddress'] for x in obj.addresses.all().values('ipaddress').distinct()])
 
-@admin.register(Statistic)
+    addresses.short_description = _("Addresses")
+
+
+#@admin.register(Statistic)
 class StatisticAdmin(admin.ModelAdmin):
     search_fields = ['periodical__name', 'client__name', 'date', ]
     ordering = ('-date', )
