@@ -117,7 +117,7 @@ CACHES = {
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'ru-RU'  # 'en-us'
+LANGUAGE_CODE = 'ru'  # 'en-us'
 
 TIME_ZONE = 'Europe/Moscow'
 
