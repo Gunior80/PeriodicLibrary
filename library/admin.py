@@ -8,24 +8,41 @@ from library.models import Periodical, Instance, Client, Address, Statistic
 
 @admin.register(Periodical)
 class PeriodicalAdmin(admin.ModelAdmin):
-    fields = ['name', 'cover', 'statistic']
-    readonly_fields = ['statistic']
+    fields = ['name', 'cover', 'all_statistic', 'clients_statistic']
+    readonly_fields = ['all_statistic', 'clients_statistic']
     list_display = ['name', 'instances_count',
                     'views_for_today', 'visits_for_today',
                     'views_for_this_month', 'visits_for_this_month']
 
-    def statistic(self, obj):
+    def all_statistic(self, obj):
         stats = obj.get_statistic()
-        print(stats)
-        canvas = '<div id="stats"></div>'
+        div = '<div id="stats"></div>'
         data = ""
         if stats:
             data = '<script type="module">' \
-                   'import {{draw}} from "/static/library/js/stats.js";draw({0});' \
+                   'import {{allstats}} from "/static/library/js/stats.js";allstats({0});' \
                    '</script>'.format(str(stats))
-        return mark_safe(canvas + data)
+        return mark_safe(div + data)
 
-    statistic.short_description = _("Statistic")
+    all_statistic.short_description = _("Statistic")
+
+    def clients_statistic(self, obj):
+        clients = obj.clients.all().distinct()
+        stats = []
+        data = ''
+        for client in clients:
+            client_stats = obj.get_statistic(client)
+            if client_stats:
+                stats.append(client_stats)
+        if stats:
+            data = '<script type="module">' \
+                   'import {{clientstats}} from "/static/library/js/stats.js";clientstats({0});' \
+                   '</script>'.format(str(stats))
+        div = '<div id="clients_stats"></div>'
+        print(data)
+        return mark_safe(div + data)
+
+    clients_statistic.short_description = _("Clients")
 
     def instances_count(self, obj):
         return obj.instances.count()

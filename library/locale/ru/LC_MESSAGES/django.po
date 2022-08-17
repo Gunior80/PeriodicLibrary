@@ -114,3 +114,7 @@ msgstr "Статистика"
 #: .\library\apps.py:7
 msgid "Periodic library"
 msgstr "Архив периодических изданий"
+
+#: .\library\models.py:106
+msgid "All time"
+msgstr "За все время"

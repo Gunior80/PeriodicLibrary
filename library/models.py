@@ -83,7 +83,8 @@ class Periodical(models.Model):
     def get_statistic(self, client=None):
         if client:
             stats = self.statistics.filter(client=client)
-        stats = self.statistics.all()
+        else:
+            stats = self.statistics.all()
         data = dict([(x['date__year'], {}) for x in stats.values('date__year').distinct()])
 
         for year in data.keys():
@@ -100,6 +101,10 @@ class Periodical(models.Model):
                 data[year]['months'][month][_('Views')] = \
                     stats.filter(date__year=year,
                                  date__month=months[month]['num']).aggregate(total=Sum('views'))['total']
+        if client:
+            data['name'] = client.name
+        data['alltime'] = _("All time")
+
         return data
 
 
@@ -144,6 +149,8 @@ def file_delete(sender, instance, **kwargs):
 
 class Client(models.Model):
     name = models.CharField(verbose_name=_("Name"), max_length=64)
+    periodical = models.ManyToManyField(Periodical, through='Statistic',
+                                        related_name='clients')
 
     def _getstat(self, periodic):
         return self.statistics.get_or_create(client=self, periodical=periodic, date=dt.date.today())[0]
