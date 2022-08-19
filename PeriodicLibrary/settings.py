@@ -29,10 +29,10 @@ SECRET_KEY = 'django-insecure-^kms!wbc&2+2(^719-jp+$%vj9^4t@$y=ecfo^k509se+ktm$v
 DJANGO_DEBUG = int(os.environ.get('DJANGO_DEBUG') or 0)
 if DJANGO_DEBUG:
     DEBUG = True
-    ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+    ALLOWED_HOSTS = ['*']
 else:
     DEBUG = False
-    ALLOWED_HOSTS = ['*']
+    ALLOWED_HOSTS = ['127.0.0.1',]
 
 
 # Application definition
@@ -81,14 +81,31 @@ WSGI_APPLICATION = 'PeriodicLibrary.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
+DJANGO_SQLITE_BASE = int(os.environ.get('DJANGO_DEBUG') or 0)
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if DJANGO_SQLITE_BASE:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
-
+else:
+    db_username = os.environ.get('DB_USER') or ''
+    db_password = os.environ.get('DB_PASS') or ''
+    db_name = os.environ.get('DB_NAME') or ''
+    db_host = os.environ.get('DB_HOST') or ''
+    db_port = os.environ.get('DB_PORT') or ''
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': db_name,
+            'USER': db_username,
+            'PASSWORD': db_password,
+            'HOST': db_host,
+            'PORT': db_port,
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -133,9 +150,7 @@ STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-if not DEBUG:
-    os.environ['DJANGO_STATIC_ROOT'] = STATIC_ROOT
-    os.environ['DJANGO_MEDIA_ROOT'] = MEDIA_ROOT
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
