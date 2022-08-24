@@ -60,9 +60,21 @@ class LoadMenu(View):
         response = []
         request_periodical = request.POST.get('periodic')
         request_string = request.POST.get('search-string')
-        periodical = models.Periodical.objects.filter(id=request_periodical).first()
-        if periodical:
-            response = periodical.json_struct(request_string)
+        value = request.POST.get('value')
+        periodic = models.Periodical.objects.filter(id=request_periodical).first()
+        if periodic:
+            if request_string:
+                response = periodic.json_search(request_string)
+            else:
+                if value:
+                    if value.isdigit():
+                        response = periodic.json_months(value)
+                    else:
+                        data = value.split('_')
+                        if len(data) == 2:
+                            response = periodic.json_instances(*data)
+                else:
+                    response = periodic.json_years()
         return HttpResponse(JsonResponse(response, safe=False), content_type="application/json")
 
 

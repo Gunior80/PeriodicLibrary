@@ -2,8 +2,6 @@
 {% load static %}
 
 {% block head %}
-    <link rel="stylesheet" href="{% static 'library/css/bstreeview.css' %}">
-    <script src="{% static 'library/js/bstreeview.js' %}"></script>
     <link rel="stylesheet" href="{% static 'library/css/catalog.css' %}">
 {% endblock %}
 
@@ -17,7 +15,50 @@
                         <div class="sidebar-brand-text mx-3"><span>Архив периодики</span></div>
                     </a>
                 </div>
-                    <div id="nav-list">
+                <style>
+                    .nav-list {
+                        position: relative;
+                        min-width: 100%;
+                        word-wrap: break-word;
+                        background-clip: border-box;
+                        border: 1px solid rgba(0,0,0,.125);
+                        border-radius: .25rem;
+                        padding: 0;
+                        overflow: hidden;
+                        margin-right: 8px;
+                        width: 12px;
+                        text-align: center;
+                    }
+                    .list-group {
+                        display: block;
+                        border-radius: 0;
+                        border-width: 1px 0 0 0;
+                        padding-top: 0.5rem;
+                        padding-bottom: 0.5rem;
+                        cursor: pointer;
+                        margin-bottom: 0;
+                        background-color: #4e73df;
+                    }
+                    .list-group:hover {
+                        background-color: #243A86;
+                    }
+                    .item-icon {
+                        margin-right: 5px;
+                    }
+                    a.text:active,
+                    a.text:hover,
+                    a.text {
+                        text-decoration: none;
+                        color: inherit;
+                    }
+                </style>
+                <div id="nav-list">
+                    {% for periodical in periodicals.all %}
+                    <a class="text" href="{% url 'periodical' slug=periodical.slug %}">
+                    <div class="list-group" style="padding-left:1rem">
+                        <i class="item-icon fa fa-folder"></i>{{ periodical.name }}
+                    </div></a>
+                    {% endfor %}
                 </div>
             </div>
         </nav>
@@ -25,25 +66,4 @@
             <img width="70%" src="{% static 'library/img/terms.svg' %}" alt="image"></img>
         </div>
     </div>
-<script>
-    var tree = [
-    {% for periodical in periodicals.all %}
-        {
-            text: "{{ periodical.name }}",
-            class: "periodic-item",
-            icon: "fa fa-folder",
-            href: "{% url 'periodical' slug=periodical.slug %}",
-        },
-    {% endfor %}
-    ];
-
-    $('#nav-list').bstreeview({
-        data: tree,
-        expandIcon: 'fa fa-angle-down fa-fw',
-        collapseIcon: 'fa fa-angle-right fa-fw',
-        indent: 1.25,
-        parentsMarginLeft: '1.25rem',
-        openNodeLinkOnNewTab: false
-    });
-</script>
 {% endblock %}

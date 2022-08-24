@@ -1,11 +1,11 @@
 import pathlib
 from django.db import models
+from django.db.models.functions import ExtractYear
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from pytils.translit import slugify
 from taggit.managers import TaggableManager
-from django.core.cache import cache
 import datetime as dt
 import django.utils.timezone as tz
 import calendar
@@ -46,38 +46,57 @@ class Periodical(models.Model):
             instances = self.instances.all()
         return instances
 
-    def json_struct(self, search_terms):
-        if not search_terms:
-            cache_obj = cache.get('full_json_'+self.slug)
-            if cache_obj:
-                return cache_obj
+    def json_years(self):
+        years = [x.year for x in self.instances.dates('date', 'year')]
+        years.sort(reverse=True)
+        data = []
+        for year in years:
+            data.append({'Title': year, 'ItemId': year, 'HasSubItem': True})
+        return data
+
+    def json_months(self, year):
+        dates = [x for x in self.instances.filter(date__year=year).dates('date', 'month')]
+        dates.sort(reverse=True)
+        data = []
+        for date in dates:
+            id = '{0}_{1}'.format(year, date.month)
+            data.append({'Title': _(date.strftime('%B')), 'ItemId': id, 'HasSubItem': True})
+        return data
+
+    def json_instances(self, year, month):
+        instances = self.instances.filter(date__year=year, date__month=month)
+        data = []
+        for instance in instances:
+            data.append({'Title': instance.shortname(), 'ItemId': instance.id})
+        return data
+
+    def json_search(self, search_terms):
         instances = self._get_search_results(search_terms)
         json_data = []
         for instance in instances:
             year = instance.date.year
             month = _(instance.date.strftime('%B'))
-            if year not in [val.get('text') for val in json_data]:
-                json_data.append({'text': year, 'nodes': [{'text': month,
-                                                           'nodes': [
-                                                               {'id': instance.id,
-                                                                'class': 'menu-item',
-                                                                'text': instance.shortname()}]}]})
+            if year not in [val.get('Title') for val in json_data]:
+                json_data.append({'Title': year, 'ItemId': year, 'Items': [{'Title': month,
+                                                                            'ItemId': "{0}_{1}".format(year, month),
+                                                                            'Items': [{'ItemId': instance.id,
+                                                                                       'Title': instance.shortname()
+                                                                                       }]
+                                                                            }]
+                                  })
             else:
-                year_count = [count for count, val in enumerate(json_data) if val['text'] == year][0]
-                if month not in [val.get('text') for val in json_data[year_count]['nodes']]:
-                    json_data[year_count]['nodes'].append({'text': month,
-                                                           'nodes': [
-                                                               {'id': instance.id,
-                                                                'class': 'menu-item',
-                                                                'text': instance.shortname()}]})
+                year_count = [count for count, val in enumerate(json_data) if val['Title'] == year][0]
+                if month not in [val.get('Title') for val in json_data[year_count]['Items']]:
+                    json_data[year_count]['Items'].append({'Title': month,
+                                                           'ItemId': "{0}_{1}".format(year, month),
+                                                           'Items': [
+                                                               {'ItemId': instance.id,
+                                                                'Title': instance.shortname()}]})
                 else:
-                    month_count = [count for count, val in enumerate(json_data[year_count]['nodes'])
-                                   if val['text'] == month][0]
-                    json_data[year_count]['nodes'][month_count]['nodes'].append({'id': instance.id,
-                                                                                 'class': 'menu-item',
-                                                                                 'text': instance.shortname()})
-        if not search_terms:
-            cache.set('full_json_'+self.slug, json_data, 60*60*24)
+                    month_count = [count for count, val in enumerate(json_data[year_count]['Items'])
+                                   if val['Title'] == month][0]
+                    json_data[year_count]['Items'][month_count]['Items'].append({'ItemId': instance.id,
+                                                                                 'Title': instance.shortname()})
         return json_data
 
     def get_statistic(self, client=None):
@@ -129,7 +148,6 @@ class Instance(models.Model):
             if old_self.file and self.file != old_self.file:
                 old_self.file.delete(False)
         super().save(*args, **kwargs)
-        cache.delete('full_json_' + self.periodical.slug)
 
     class Meta:
         verbose_name = _("Instance")
@@ -142,7 +160,6 @@ class Instance(models.Model):
 
 @receiver(pre_delete, sender=Instance)
 def file_delete(sender, instance, **kwargs):
-    cache.delete('full_json_' + instance.periodical.slug)
     if instance.file.name:
         instance.file.delete(False)
 

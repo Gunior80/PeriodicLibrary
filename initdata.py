@@ -12,7 +12,7 @@ application = get_wsgi_application()
 from library.models import Periodical, Instance
 
 if __name__ == "__main__":
-    root = pathlib.Path('E:\\Няръяна Вындер')
+    root = pathlib.Path('D:\\Няръяна Вындер')
     files = root.rglob('*.pdf')
 
     periodic, created = Periodical.objects.get_or_create(name=root.name)

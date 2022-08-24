@@ -1,11 +1,4 @@
-var full_json;
 
-function colorize_menu(elements, curent) {
-    for (var i = 0; i < elements.length; i++) {
-        elements[i].style.backgroundColor = null;
-    }
-    curent.style.backgroundColor = "#243FFF";
-}
 
 function wait(bool) {
     let el = $("#wait");
@@ -14,21 +7,6 @@ function wait(bool) {
     }
     else {
         el.hide();;
-    }
-}
-
-function set_events() {
-    var elements = document.querySelectorAll(".menu-item");
-    for (var i = 0; i < elements.length; i++) {
-        elements[i].onclick = function(e){
-            colorize_menu(elements, this)
-            $('#cover').hide();
-            $('#content').show();
-            library_post({
-                'action': 'pdf',
-                'document': this.id
-            });
-        };
     }
 }
 
@@ -46,7 +24,7 @@ function send(msg, addr, action) {
 
 function library_post(options) {
     let token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
-    let msg = { csrfmiddlewaretoken: token};
+    let msg = {csrfmiddlewaretoken: token};
     let addr, action;
     switch (options['action'])
     {
@@ -59,17 +37,15 @@ function library_post(options) {
             send(msg, addr, action);
             break;
         case "menu":
-            if (full_json && !options['search-string']) {
-                show_menu(full_json);
-                break;
-            }
             addr = "/load_menu";
             msg = Object.assign({}, msg, {'periodic': options['periodic'], "search-string": options['search-string']});
             action = function(data) {
-                if (!options['search-string']) {
-                    full_json = data;
+                if (!options['search-string'])  {
+                    show_menu(data, true);
                 }
-                show_menu(data);
+                else {
+                    show_menu(data, false);
+                }
             };
             send(msg, addr, action);
             break;
@@ -87,17 +63,46 @@ function library_post(options) {
     }
 }
 
-function show_menu(json) {
-    $('#nav-list').bstreeview({
-        data: json,
-        expandIcon: 'fa fa-angle-down fa-fw',
-        collapseIcon: 'fa fa-angle-right fa-fw',
-        indent: 1.25,
-        parentsMarginLeft: '1.5rem',
-        openNodeLinkOnNewTab: true
-    });
+function menuItemClick(selectedId, selectedLi, $clickedLi) {
+    if (selectedLi.hasClass("parent_li")) {
+        selectedLi.find(' > span i').click();
+    }
+    else {
+        $('#cover').hide();
+        $('#content').show();
+        library_post({
+            'action': 'pdf',
+            'document': selectedId
+        });
+    }
+}
+
+function show_menu(json, subload) {
+    let token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+    let config = {
+        mandatorySelect: false,
+        selectedIdElementName: 'nav-list',
+        selectedItemId: 'nav-list',
+        onSelect: menuItemClick,
+    }
+
+    if (subload) {
+        let lazyconf = {
+            lazyLoad: true,
+            lazyRequestUrl: '/load_menu',
+            lazyLoadMethod: 'POST',
+            lazySendParameterName: 'value',
+            additionalParams: {
+            csrfmiddlewaretoken: token,
+            periodic: $('#periodic').val()
+            }
+        }
+
+        Object.assign(config, lazyconf);
+    }
+
+    $('#nav-list').jsonTree(json, config);
     wait(false);
-    set_events();
 }
 
 function init_autocomplete(menuitems) {
@@ -160,9 +165,7 @@ $( document ).ready(function() {
         'action': 'autocomplete',
         'periodic': $('#periodic').val()
     });
-
     $('#content').hide();
-    set_events();
 });
 
 

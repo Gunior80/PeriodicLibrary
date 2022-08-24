@@ -26,13 +26,12 @@ SECRET_KEY = 'django-insecure-^kms!wbc&2+2(^719-jp+$%vj9^4t@$y=ecfo^k509se+ktm$v
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DJANGO_DEBUG = int(os.environ.get('DJANGO_DEBUG') or 0)
-if DJANGO_DEBUG:
+if os.environ.get('DJANGO_DEBUG', 0):
     DEBUG = True
     ALLOWED_HOSTS = ['*']
 else:
     DEBUG = False
-    ALLOWED_HOSTS = ['127.0.0.1',]
+    ALLOWED_HOSTS = ['127.0.0.1', ]
 
 
 # Application definition
@@ -81,9 +80,8 @@ WSGI_APPLICATION = 'PeriodicLibrary.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-DJANGO_SQLITE_BASE = int(os.environ.get('DJANGO_DEBUG') or 0)
 
-if DJANGO_SQLITE_BASE:
+if os.environ.get('DJANGO_SQLITE', 0):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -91,19 +89,14 @@ if DJANGO_SQLITE_BASE:
         }
     }
 else:
-    db_username = os.environ.get('DB_USER') or ''
-    db_password = os.environ.get('DB_PASS') or ''
-    db_name = os.environ.get('DB_NAME') or ''
-    db_host = os.environ.get('DB_HOST') or ''
-    db_port = os.environ.get('DB_PORT') or ''
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': db_name,
-            'USER': db_username,
-            'PASSWORD': db_password,
-            'HOST': db_host,
-            'PORT': db_port,
+            'NAME': os.environ.get('DB_NAME', 'PeriodicLibrary'),
+            'USER': os.environ.get('DB_USER', 'user'),
+            'PASSWORD': os.environ.get('DB_PASS', 'password'),
+            'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
+            'PORT': os.environ.get('DB_PORT', 5432),
         }
     }
 

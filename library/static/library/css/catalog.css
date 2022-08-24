@@ -5,18 +5,16 @@ body {
 .sidebar {
     width: 17rem !important;
 }
+
 #nav-container {
     display: flex;
     flex-flow: column;
     height: 100vh;
+    color: Lavender;
 }
 
 #nav-header {
     flex: 0 1 auto;
-}
-
-#name {
-    color: Lavender;
 }
 
 .ui-autocomplete {
@@ -35,14 +33,6 @@ body {
     width: 100%;
     scrollbar-width: thin;
     scrollbar-color: #243A86 #3F65EB;
-}
-
-.bstreeview .list-group-item:hover {
-  background-color: #243A86;
-}
-
-.list-group-item {
-    color: Lavender;
 }
 
 /* Chrome, Edge and Safari */
