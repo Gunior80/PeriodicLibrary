@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'PeriodicLibrary.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-if os.environ.get('DJANGO_SQLITE', 0):
+if os.environ.get('DB_SQLITE', 0):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
