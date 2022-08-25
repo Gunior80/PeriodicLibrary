@@ -25,14 +25,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-^kms!wbc&2+2(^719-jp+$%vj9^4t@$y=ecfo^k509se+ktm$v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+SITE_NAME = os.environ.get('DJANGO_SITE', '127.0.0.1')
 
 if os.environ.get('DJANGO_DEBUG', 0):
     DEBUG = True
-    ALLOWED_HOSTS = ['*']
+    ALLOWED_HOSTS = [SITE_NAME, 'www.{0}'.format(SITE_NAME)]
 else:
     DEBUG = False
-    ALLOWED_HOSTS = ['127.0.0.1', ]
-
+    ALLOWED_HOSTS = [SITE_NAME, 'www.{0}'.format(SITE_NAME)]
+    CSRF_TRUSTED_ORIGINS = ['http://*.{0}'.format(SITE_NAME), ]
 
 # Application definition
 

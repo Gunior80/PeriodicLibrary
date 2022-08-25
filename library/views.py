@@ -14,19 +14,21 @@ class Index(ListView):
     context_object_name = 'periodicals'
     template_name = 'library/index.html'
 
-
-class PeriodicView(DetailView):
-    model = models.Periodical
-    context_object_name = 'periodical'
-    template_name = 'library/catalog.html'
-
     def get(self, request, *args, **kwargs):
         request.session['newview'] = True
         request.session['viewed'] = []
         return super().get(self, request, *args, **kwargs)
 
 
+class PeriodicView(DetailView):
+    # Load catalog
+    model = models.Periodical
+    context_object_name = 'periodical'
+    template_name = 'library/catalog.html'
+
+
 class LoadURL(View):
+    # Load instance url
     http_method_names = ['post']
 
     def post(self, request, **kwargs):
@@ -50,10 +52,12 @@ class LoadURL(View):
 
 @method_decorator(xframe_options_exempt, name='dispatch')
 class Viewer(TemplateView):
+    # Load pdf viewer
     template_name = 'library/viewer.html'
 
 
 class LoadMenu(View):
+    # Load json structs for generate treeview
     http_method_names = ['post']
 
     def post(self, request, **kwargs):
@@ -79,6 +83,7 @@ class LoadMenu(View):
 
 
 class LoadAutocomplete(View):
+    # Load tags for seach field
     http_method_names = ['post']
 
     def post(self, request, **kwargs):
@@ -92,6 +97,7 @@ class LoadAutocomplete(View):
 
 
 def secure(request):
+    # For Nginx request. This is necessary for a one-time download
     if request.session['material'] == request.META.get('HTTP_X_ORIGINAL_URI'):
         request.session['material'] = None
         return HttpResponse("")

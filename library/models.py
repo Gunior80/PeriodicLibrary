@@ -1,6 +1,5 @@
 import pathlib
 from django.db import models
-from django.db.models.functions import ExtractYear
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
@@ -122,8 +121,7 @@ class Periodical(models.Model):
                                  date__month=months[month]['num']).aggregate(total=Sum('views'))['total']
         if client:
             data['name'] = client.name
-        data['alltime'] = _("All time")
-
+            data['alltime'] = _("All time")
         return data
 
 
