@@ -32,7 +32,9 @@ function library_post(options) {
             addr = "/load_url";
             msg = Object.assign({}, msg, {'document': options['document']});
             action = function(data) {
-                $('#content')[0].src = '/viewer/?file='+data["url"];
+                $('#content').remove();
+                var span = $('<iframe id="content"></span>').appendTo($('#content-wrapper'));
+                span.attr('src',"/viewer/?file="+data["url"]);
             };
             send(msg, addr, action);
             break;
@@ -69,7 +71,6 @@ function menuItemClick(selectedId, selectedLi, $clickedLi) {
     }
     else {
         $('#cover').hide();
-        $('#content').show();
         library_post({
             'action': 'pdf',
             'document': selectedId
