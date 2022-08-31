@@ -119,8 +119,9 @@ class Periodical(models.Model):
                 data[year]['months'][month][_('Views')] = \
                     stats.filter(date__year=year,
                                  date__month=months[month]['num']).aggregate(total=Sum('views'))['total']
-        if client:
-            data['name'] = client.name
+        if stats:
+            if client:
+                data['name'] = client.name
             data['alltime'] = _("All time")
         return data
 
