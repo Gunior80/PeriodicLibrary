@@ -125,7 +125,7 @@ class ClientAdmin(admin.ModelAdmin):
     addresses.short_description = _("Addresses")
 
 
-# @admin.register(Statistic)
+@admin.register(Statistic)
 class StatisticAdmin(admin.ModelAdmin):
     search_fields = ['periodical__name', 'client__name', 'date', ]
     ordering = ('-date', )
