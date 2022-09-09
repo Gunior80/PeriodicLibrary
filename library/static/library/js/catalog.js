@@ -64,12 +64,26 @@ function library_post(options) {
             break;
     }
 }
+function isDoubleClicked(element) {
+    //if already clicked return TRUE to indicate this click is not allowed
+    if (element.data("isclicked")) return true;
+
+    //mark as clicked for 1 second
+    element.data("isclicked", true);
+    setTimeout(function () {
+        element.removeData("isclicked");
+    }, 1000);
+
+    //return FALSE to indicate this click was allowed
+    return false;
+}
 
 function menuItemClick(selectedId, selectedLi, $clickedLi) {
     if (selectedLi.hasClass("parent_li")) {
         selectedLi.find(' > span i').click();
     }
     else {
+        if (isDoubleClicked(selectedLi)) return;
         $('#cover').hide();
         library_post({
             'action': 'pdf',
@@ -143,6 +157,7 @@ function init_autocomplete(menuitems) {
 }
 
 $( document ).ready(function() {
+
     $('#search-string').val('');
     wait(true);
     $('form').submit(function(e) {
