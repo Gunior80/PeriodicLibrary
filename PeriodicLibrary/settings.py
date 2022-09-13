@@ -38,6 +38,7 @@ else:
 # Application definition
 
 INSTALLED_APPS = [
+    'taggit_autosuggest',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

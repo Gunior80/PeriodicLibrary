@@ -85,7 +85,8 @@ class PeriodicalAdmin(admin.ModelAdmin):
 class InstanceAdmin(admin.ModelAdmin):
     search_fields = ['periodical__name', 'tags__name', ]
     ordering = ('-date',)
-    list_display = ['__str__', 'periodical', 'tags_list']
+    list_display = ['__str__', 'periodical', 'tags_list', ]
+    list_filter = ['periodical__name', 'tags', ]
 
     def periodical(self, obj):
         return obj.periodical.name
@@ -93,10 +94,12 @@ class InstanceAdmin(admin.ModelAdmin):
     periodical.short_description = _("Number of instances")
 
     def tags_list(self, obj):
-        tags = ', '.join(list(obj.tags.filter().values_list('name', flat=True)))
-        if not tags:
-            tags = "-"
-        return tags
+        tags = list(obj.tags.filter().values_list('name', flat=True))
+        tags.sort()
+        string = ', '.join(tags)
+        if not string:
+            string = "-"
+        return string
 
     tags_list.short_description = _("List of tags")
 
@@ -116,11 +119,16 @@ class PeriodicStatsAdmin(admin.TabularInline):
 
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ['name', 'addresses']
+    list_display = ['name', 'addresses', ]
     inlines = [AddressAdmin, ]
 
     def addresses(self, obj):
-        return ", ".join([x['ipaddress'] for x in obj.addresses.all().values('ipaddress').distinct()])
+        addrs = [[x['ipaddress'], x['comment']] for x in obj.addresses.all().values('ipaddress', 'comment').distinct()]
+        template = '<p>{0} {1}</p>'
+        string = ''
+        for addr in addrs:
+            string += template.format(addr[0], addr[1])
+        return mark_safe(string)
 
     addresses.short_description = _("Addresses")
 

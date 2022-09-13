@@ -4,7 +4,7 @@ from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from pytils.translit import slugify
-from taggit.managers import TaggableManager
+from taggit_autosuggest.managers import TaggableManager
 import datetime as dt
 import django.utils.timezone as tz
 import calendar
@@ -193,6 +193,7 @@ class Address(models.Model):
     client = models.ForeignKey(Client, verbose_name=_("Client"),
                                related_name="addresses", on_delete=models.CASCADE)
     ipaddress = models.GenericIPAddressField(verbose_name=_("Address"), unique=True)
+    comment = models.CharField(max_length=128, verbose_name=_('comment'), blank=True)
 
     @staticmethod
     def is_client(addr):
