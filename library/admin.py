@@ -135,16 +135,6 @@ class ClientAdmin(admin.ModelAdmin):
 
 @admin.register(Statistic)
 class StatisticAdmin(admin.ModelAdmin):
-    search_fields = ['periodical__name', 'client__name', 'date', ]
     ordering = ('-date', )
-    list_display = ['periodical', 'client', 'year', 'month', 'visits', 'views']
-
-    def year(self, obj):
-        return obj.date.strftime('%Y')
-
-    year.short_description = _("Year")
-
-    def month(self, obj):
-        return _(obj.date.strftime('%B'))
-
-    month.short_description = _("Month")
+    list_display = ['client', 'periodical', 'date', 'visits', 'views']
+    list_filter = ['periodical__name', 'client__name', 'date']
