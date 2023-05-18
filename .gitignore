@@ -1,2 +1,5 @@
 /db.sqlite3
 /library/migrations/0*.py
+/media/*
+/static/*
+/.idea/*

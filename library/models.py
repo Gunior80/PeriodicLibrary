@@ -110,7 +110,7 @@ class Periodical(models.Model):
             data[year][_('Views')] = stats.filter(date__year=year).aggregate(total=Sum('views'))['total']
             data[year]['months'] = {}
             months = dict([(_(calendar.month_name[x['date__month']]), {'num': x['date__month']})
-                           for x in stats.filter(date__year=year).values('date__month').distinct()])
+                           for x in stats.filter(date__year=year).values('date__month').distinct().order_by('date')])
             for month in months.keys():
                 data[year]['months'][month] = \
                     {_('Visits'): stats.filter(date__year=year,
