@@ -55,8 +55,7 @@ class PeriodicalAdmin(admin.ModelAdmin):
     views_for_today.short_description = " ".join([str(_("Views for")), str(_("today"))])
 
     def visits_for_today(self, obj):
-        return obj.statistics.filter(date__year=dt.date.today().year, date__month=dt.date.today().month,
-                                     date__day=dt.date.today().day).aggregate(total=Sum('visits'))['total']
+        return obj.statistics.filter(date=dt.date.today()).aggregate(total=Sum('visits'))['total']
 
     visits_for_today.short_description = " ".join([str(_("Visits for")), str(_("today"))])
 
