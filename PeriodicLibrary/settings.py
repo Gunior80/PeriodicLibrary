@@ -38,7 +38,7 @@ else:
 # Application definition
 
 INSTALLED_APPS = [
-    'taggit_autosuggest',
+    #'taggit_autosuggest',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'library',
     'taggit',
+    'taggit_labels',
 ]
 
 MIDDLEWARE = [

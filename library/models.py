@@ -4,11 +4,27 @@ from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from pytils.translit import slugify
-from taggit_autosuggest.managers import TaggableManager
+from taggit.models import Tag
+from taggit.managers import TaggableManager
 import datetime as dt
 import django.utils.timezone as tz
 import calendar
-from django.db.models import Sum
+from django.db.models import Sum, Q
+
+
+class TagGroup(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    tags = TaggableManager(blank=True)
+
+    def tags_list(self):
+        return list(self.tags.names())
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _("Tag group")
+        verbose_name_plural = "    " + str(_("Tag groups"))
 
 
 def cover_save_path(instance, filename):
@@ -17,6 +33,8 @@ def cover_save_path(instance, filename):
 
 class Periodical(models.Model):
     name = models.CharField(verbose_name=_("Name"), max_length=64)
+    tag_groups = models.ManyToManyField(TagGroup, verbose_name=_("Tag groups"),
+                                        related_name="periodicals")
     slug = models.SlugField(default='', unique=True)
     cover = models.ImageField(verbose_name=_("cover"), upload_to=cover_save_path,
                               null=True)
@@ -32,18 +50,35 @@ class Periodical(models.Model):
         self.slug = slugify(self.name)
         return super().save(*args, **kwargs)
 
+    def available_tags(self):
+        all_tags = [tag for tag_group in self.tag_groups.all() for tag in tag_group.tags_list()]
+        return all_tags
+
     def _get_search_results(self, search_terms):
+        instances = self.instances.all()
         if search_terms:
-            search_terms = search_terms.split(", ")
-            instances = self.instances.filter(tags__name__in=search_terms)
+            search_terms = list(filter(None, search_terms.replace(", ", ",").split(",")))
+            and_instances = []
+            or_instances = []
             for term in search_terms:
-                if term == "":
-                    continue
-                instances &= self.instances.filter(tags__name=term)
-            instances = instances.distinct()
-        else:
-            instances = self.instances.all()
-        return instances
+                tags = Tag.objects.filter(name__icontains=term)
+                if tags.exists():
+                    if tags.count() > 1:
+                        group_or_instances = Q()
+                        for tag in tags:
+                            group_or_instances |= Q(tags=tag)
+                        or_instances.append(self.instances.filter(group_or_instances))
+                    else:
+                        and_instances.append(self.instances.filter(tags__in=tags))
+            for group_or_instances in or_instances:
+                instances &= group_or_instances
+            for and_instance in and_instances:
+                instances &= and_instance
+            result = instances.distinct()
+
+            if not or_instances and not and_instances:
+                return Instance.objects.none()
+        return result
 
     def json_years(self):
         years = [x.year for x in self.instances.dates('date', 'year')]
@@ -136,6 +171,7 @@ class Instance(models.Model):
                                    related_name="instances", on_delete=models.CASCADE)
     date = models.DateField(verbose_name=_("Date"))
     file = models.FileField(verbose_name=_("Instance"), upload_to=instance_save_path)
+    fulltext = models.TextField(verbose_name=_("Text"), default="", blank=True)
     tags = TaggableManager(blank=True)
 
     def shortname(self):

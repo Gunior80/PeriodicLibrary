@@ -2,13 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-16 11:00+0300\n"
+"POT-Creation-Date: 2023-11-15 23:11+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,102 +19,137 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
-#: .\library\admin.py:28 .\library\models.py:201
+
+#: .\library\admin.py:39
+msgid "Download tag lists"
+msgstr "Загрузить списки тегов"
+
+#: .\library\admin.py:60 .\library\models.py:263
 msgid "Statistic"
 msgstr "Статистика"
 
-#: .\library\admin.py:33 .\library\admin.py:76
-msgid "Number of instances"
-msgstr "Количество номеров"
-
-#: .\library\admin.py:38 .\library\admin.py:50
-msgid "Views for"
-msgstr "Просмотров за"
-
-#: .\library\admin.py:38 .\library\admin.py:44
-msgid "today"
-msgstr "Сегодня"
-
-#: .\library\admin.py:44 .\library\admin.py:56
-msgid "Visits for"
-msgstr "Посещений за"
-
-#: .\library\admin.py:50 .\library\admin.py:56
-msgid "this month"
-msgstr "текущий месяц"
-
-#: .\library\admin.py:84
-msgid "List of tags"
-msgstr "Список тегов"
-
-#: .\library\admin.py:114
-msgid "Year"
-msgstr "Год"
-
-#: .\library\admin.py:119
-msgid "Month"
-msgstr "Месяц"
-
-#: .\library\models.py:20 .\library\models.py:144
-msgid "Name"
-msgstr "Название"
-
-#: .\library\models.py:22
-msgid "cover"
-msgstr "Обложка"
-
-#: .\library\models.py:29 .\library\models.py:110 .\library\models.py:191
-msgid "Periodical"
-msgstr "Периодическое издание"
-
-#: .\library\models.py:30
-msgid "Periodicals"
-msgstr "Периодические издания"
-
-#: .\library\models.py:112 .\library\models.py:193
-msgid "Date"
-msgstr "Дата"
-
-#: .\library\models.py:113 .\library\models.py:128
-msgid "Instance"
-msgstr "Номер"
-
-#: .\library\models.py:129
-msgid "Instances"
-msgstr "Номера"
-
-#: .\library\models.py:163 .\library\models.py:168 .\library\models.py:189
-msgid "Client"
-msgstr "Клиент"
-
-#: .\library\models.py:164
+#: .\library\admin.py:77 .\library\models.py:225
 msgid "Clients"
 msgstr "Клиенты"
 
-#: .\library\models.py:170 .\library\models.py:184
-msgid "Address"
-msgstr "Адрес"
+#: .\library\admin.py:82 .\library\admin.py:151
+msgid "Number of instances"
+msgstr "Количество номеров"
 
-#: .\library\models.py:185
+#: .\library\admin.py:87 .\library\admin.py:98
+msgid "Views for"
+msgstr "Просмотров за"
+
+#: .\library\admin.py:87 .\library\admin.py:92
+msgid "today"
+msgstr "Сегодня"
+
+#: .\library\admin.py:92 .\library\admin.py:104
+msgid "Visits for"
+msgstr "Посещений за"
+
+#: .\library\admin.py:98 .\library\admin.py:104
+msgid "this month"
+msgstr "текущий месяц"
+
+#: .\library\admin.py:141
+msgid "The task is completed in"
+msgstr "Задача выполнена за"
+
+#: .\library\admin.py:142
+msgid "seconds"
+msgstr "Секунд"
+
+#: .\library\admin.py:146
+msgid "Add keywords"
+msgstr "Добавить ключевые слова"
+
+#: .\library\admin.py:161
+msgid "List of tags"
+msgstr "Список тегов"
+
+#: .\library\admin.py:190 .\library\models.py:247
 msgid "Addresses"
 msgstr "Адреса"
 
-#: .\library\models.py:194
-msgid "Visits"
-msgstr "Посещения"
-
-#: .\library\models.py:195
-msgid "Views"
-msgstr "Просмотры"
-
-#: .\library\models.py:202
-msgid "Statistics"
-msgstr "Статистика"
-
-#: .\library\apps.py:7
+#: .\library\apps.py:8
 msgid "Periodic library"
 msgstr "Архив периодических изданий"
 
-#: .\library\models.py:106
+#: .\library\forms.py:29
+msgid "Please provide a list of tags. One tag per line."
+msgstr "Пожалуйста, предоставьте список тегов. Один тег в строке."
+
+#: .\library\models.py:26
+msgid "Tag group"
+msgstr "Группа тегов"
+
+#: .\library\models.py:27 .\library\models.py:36
+msgid "Tag groups"
+msgstr "Группы тегов"
+
+#: .\library\models.py:35 .\library\models.py:203
+msgid "Name"
+msgstr "Название"
+
+#: .\library\models.py:39
+msgid "cover"
+msgstr "Обложка"
+
+#: .\library\models.py:46 .\library\models.py:170 .\library\models.py:253
+msgid "Periodical"
+msgstr "Периодическое издание"
+
+#: .\library\models.py:47
+msgid "Periodicals"
+msgstr "Периодические издания"
+
+#: .\library\models.py:144 .\library\models.py:151 .\library\models.py:256
+msgid "Visits"
+msgstr "Посещения"
+
+#: .\library\models.py:145 .\library\models.py:154 .\library\models.py:257
+msgid "Views"
+msgstr "Просмотры"
+
+#: .\library\models.py:160
 msgid "All time"
 msgstr "За все время"
+
+#: .\library\models.py:172 .\library\models.py:255
+msgid "Date"
+msgstr "Дата"
+
+#: .\library\models.py:173 .\library\models.py:188
+msgid "Instance"
+msgstr "Номер"
+
+#: .\library\models.py:174
+msgid "Text"
+msgstr "Текст документа"
+
+#: .\library\models.py:189
+msgid "Instances"
+msgstr "Номера"
+
+#: .\library\models.py:224 .\library\models.py:229 .\library\models.py:251
+msgid "Client"
+msgstr "Клиент"
+
+#: .\library\models.py:231 .\library\models.py:246
+msgid "Address"
+msgstr "Адрес"
+
+#: .\library\models.py:232
+msgid "comment"
+msgstr "Комментарий"
+
+#: .\library\models.py:264
+msgid "Statistics"
+msgstr "Статистика"
+
+#~ msgid "Year"
+#~ msgstr "Год"
+
+#~ msgid "Month"
+#~ msgstr "Месяц"
