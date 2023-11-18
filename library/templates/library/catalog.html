@@ -1,5 +1,6 @@
 {% extends "library/base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block tittle %} - {{ periodical.name }}{% endblock %}
 
@@ -22,16 +23,18 @@
                     <div id="name" class="d-flex justify-content-center align-items-center">{{ periodical.name }}</div>
                     <form class="d-flex justify-content-center align-items-center navbar-search">
                         <div class="input-group">
+                            <div class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#HelpModal" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'How to search' %}">
+                                <i class="fa fa-question"></i>
+                            </div>
                             <input id="search-string" class="bg-light form-control border-0 small" type="text" placeholder="Поиск">
                             <input type="hidden" id="periodic" value="{{ periodical.id }}"/>
                             {% csrf_token %}
-                            <button class="btn btn-primary py-0" type="submit"><i class="fas fa-search"></i></button>
+                            <button class="btn btn-primary py-0" type="submit" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Search' %}"><i class="fas fa-search"></i></button>
                         </div>
-
                     </form>
                 </div>
                 <div id="wait" style="margin-top: 1vh;" class="spinner-border text-light" role="status">
-                    <span class="visually-hidden">Загрузка...</span>
+                    <span class="visually-hidden">Loading...</span>
                 </div>
                 <div id="nav-list"></div>
             </div>
@@ -42,5 +45,32 @@
             {% endif %}
             <iframe id="content"></iframe>
         </div>
+    </div>
+    <!-- Модальное окно -->
+    <div class="modal fade" id="HelpModal" tabindex="-1" aria-labelledby="HelpModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="HelpModalLabel">{% trans 'How to search' %}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+          </div>
+          <div class="modal-body">
+              <p>{% trans 'The search bar provides you with a convenient way to quickly find information. Enter keywords, and the system will perform a substring search. Separate keywords with commas to refine your query.' %}</p>
+              <p>{% trans 'Usage examples:' %}</p>
+              <p><strong>{% trans 'Main search:' %}</strong></p>
+              <p>{% trans 'Enter "Smith" for a general search using this keyword.' %}</p>
+              <br/>
+              <p><strong>{% trans 'Search with multiple keywords:' %}</strong></p>
+              <p>{% trans 'Enter "history, Smith" to find related information.' %}</p>
+              <br/>
+              <div><strong>{% trans 'Partial match search:' %}</strong></div>
+              <p>{% trans 'Enter "sci" to get results that include "science" and "scientific".' %}</p>
+              <br/>
+              <p><strong>{% trans 'Cancel search results:' %}</strong></p>
+              <p>{% trans 'Perform a search without specifying keywords.' %}</p>
+          </div>
+          <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button></div>
+        </div>
+      </div>
     </div>
 {% endblock %}

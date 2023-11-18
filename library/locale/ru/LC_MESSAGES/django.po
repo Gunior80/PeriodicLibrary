@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-15 23:11+0300\n"
+"POT-Creation-Date: 2023-11-18 11:14+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,55 +20,55 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: .\library\admin.py:39
+#: .\library\admin.py:40
 msgid "Download tag lists"
 msgstr "Загрузить списки тегов"
 
-#: .\library\admin.py:60 .\library\models.py:263
+#: .\library\admin.py:61 .\library\models.py:263
 msgid "Statistic"
 msgstr "Статистика"
 
-#: .\library\admin.py:77 .\library\models.py:225
+#: .\library\admin.py:78 .\library\models.py:225
 msgid "Clients"
 msgstr "Клиенты"
 
-#: .\library\admin.py:82 .\library\admin.py:151
+#: .\library\admin.py:83 .\library\admin.py:152
 msgid "Number of instances"
 msgstr "Количество номеров"
 
-#: .\library\admin.py:87 .\library\admin.py:98
+#: .\library\admin.py:88 .\library\admin.py:99
 msgid "Views for"
 msgstr "Просмотров за"
 
-#: .\library\admin.py:87 .\library\admin.py:92
+#: .\library\admin.py:88 .\library\admin.py:93
 msgid "today"
 msgstr "Сегодня"
 
-#: .\library\admin.py:92 .\library\admin.py:104
+#: .\library\admin.py:93 .\library\admin.py:105
 msgid "Visits for"
 msgstr "Посещений за"
 
-#: .\library\admin.py:98 .\library\admin.py:104
+#: .\library\admin.py:99 .\library\admin.py:105
 msgid "this month"
 msgstr "текущий месяц"
 
-#: .\library\admin.py:141
+#: .\library\admin.py:142
 msgid "The task is completed in"
 msgstr "Задача выполнена за"
 
-#: .\library\admin.py:142
+#: .\library\admin.py:143
 msgid "seconds"
 msgstr "Секунд"
 
-#: .\library\admin.py:146
+#: .\library\admin.py:147
 msgid "Add keywords"
 msgstr "Добавить ключевые слова"
 
-#: .\library\admin.py:161
+#: .\library\admin.py:162
 msgid "List of tags"
 msgstr "Список тегов"
 
-#: .\library\admin.py:190 .\library\models.py:247
+#: .\library\admin.py:191 .\library\models.py:247
 msgid "Addresses"
 msgstr "Адреса"
 
@@ -147,6 +147,64 @@ msgstr "Комментарий"
 #: .\library\models.py:264
 msgid "Statistics"
 msgstr "Статистика"
+
+#: .\library\templates\library\catalog.html:26
+#: .\library\templates\library\catalog.html:54
+msgid "How to search"
+msgstr "Как пользоваться поиском"
+
+#: .\library\templates\library\catalog.html:32
+msgid "Search"
+msgstr "Поиск"
+
+#: .\library\templates\library\catalog.html:55
+#: .\library\templates\library\catalog.html:72
+msgid "Close"
+msgstr "Закрыть"
+
+#: .\library\templates\library\catalog.html:58
+msgid ""
+"The search bar provides you with a convenient way to quickly find "
+"information. Enter keywords, and the system will perform a substring search. "
+"Separate keywords with commas to refine your query."
+msgstr "Поисковая строка предоставляет вам удобный способ быстрого поиска информации. Введите ключевые слова, и система выполнит поиск по подстроке. Разделяйте ключевые слова запятой, чтобы уточнить запрос."
+
+#: .\library\templates\library\catalog.html:59
+msgid "Usage examples:"
+msgstr "Примеры использования:"
+
+#: .\library\templates\library\catalog.html:60
+msgid "Main search:"
+msgstr "Основной поиск:"
+
+#: .\library\templates\library\catalog.html:61
+msgid "Enter \"Smith\" for a general search using this keyword."
+msgstr "Введите \"Пичков\" для общего поиска по этому ключевому слову."
+
+#: .\library\templates\library\catalog.html:63
+msgid "Search with multiple keywords:"
+msgstr "Поиск по нескольким ключевым словам:"
+
+#: .\library\templates\library\catalog.html:64
+msgid "Enter \"history, Smith\" to find related information."
+msgstr "Введите \"библиотека, Пичкова\" для поиска связанной информации."
+
+#: .\library\templates\library\catalog.html:66
+msgid "Partial match search:"
+msgstr "Поиск по частичному совпадению:"
+
+#: .\library\templates\library\catalog.html:67
+msgid ""
+"Enter \"sci\" to get results that include \"science\" and \"scientific\"."
+msgstr "Введите \"вод\" для получения результатов, включающих \"оленевод\" и \"Лесозавод\"."
+
+#: .\library\templates\library\catalog.html:69
+msgid "Cancel search results:"
+msgstr "Отменить результаты поиска:"
+
+#: .\library\templates\library\catalog.html:70
+msgid "Perform a search without specifying keywords."
+msgstr "Выполните поиск без указания ключевых слов."
 
 #~ msgid "Year"
 #~ msgstr "Год"
