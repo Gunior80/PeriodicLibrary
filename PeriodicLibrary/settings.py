@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from pathlib import Path
 import mimetypes
+from django.utils.translation import gettext_lazy as _
+
 
 mimetypes.add_type("application/javascript", ".js", True)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,18 +29,19 @@ SECRET_KEY = 'django-insecure-^kms!wbc&2+2(^719-jp+$%vj9^4t@$y=ecfo^k509se+ktm$v
 # SECURITY WARNING: don't run with debug turned on in production!
 SITE_NAME = os.environ.get('DJANGO_SITE', '127.0.0.1')
 
-if os.environ.get('DJANGO_DEBUG', 0):
+ENV_DEBUG = os.environ.get('DJANGO_DEBUG', 'True')
+if ENV_DEBUG == 'True':
     DEBUG = True
     ALLOWED_HOSTS = [SITE_NAME, 'www.{0}'.format(SITE_NAME)]
-else:
+elif ENV_DEBUG == 'False':
     DEBUG = False
     ALLOWED_HOSTS = [SITE_NAME, 'www.{0}'.format(SITE_NAME)]
     CSRF_TRUSTED_ORIGINS = ['http://*.{0}'.format(SITE_NAME), ]
-
+else:
+    raise _('The DJANGO_DEBUG environment variable has an incorrect value.')
 # Application definition
 
 INSTALLED_APPS = [
-    #'taggit_autosuggest',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -83,25 +86,36 @@ WSGI_APPLICATION = 'PeriodicLibrary.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
-if os.environ.get('DB_SQLITE', 0):
+ENV_SQLITE = os.environ.get('DB_SQLITE', 'True')
+if ENV_SQLITE == 'True':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': os.environ.get('DB_NAME', 'PeriodicLibrary'),
-            'USER': os.environ.get('DB_USER', 'user'),
-            'PASSWORD': os.environ.get('DB_PASS', 'password'),
-            'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
-            'PORT': os.environ.get('DB_PORT', 5432),
+elif ENV_SQLITE == 'False':
+    db_name = os.environ.get('DB_NAME', 'PeriodicLibrary')
+    user = os.environ.get('DB_USER', 'user')
+    pswd = os.environ.get('DB_PASS', 'password')
+    host = os.environ.get('DB_HOST', '127.0.0.1')
+    port = os.environ.get('DB_PORT', 5432)
+    if db_name and user and pswd and host and isinstance(port, int):
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql_psycopg2',
+                'NAME': db_name,
+                'USER': user,
+                'PASSWORD': pswd,
+                'HOST': host,
+                'PORT': int(port),
+            }
         }
-    }
+    else:
+        raise _('The environment variables for connecting to the database are incorrect.')
+else:
+    print(ENV_SQLITE)
+    raise _('The DB_SQLITE environment variable has an incorrect value.')
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -142,7 +156,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

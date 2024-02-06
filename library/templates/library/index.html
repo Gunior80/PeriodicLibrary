@@ -1,5 +1,6 @@
 {% extends "library/base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block head %}{% endblock %}
 
@@ -10,7 +11,7 @@
                 <div id="nav-header">
                     <img src="{% static 'library/img/logo.gif' %}" width="100%" alt="image"></img>
                     <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
-                        <div class="sidebar-brand-text mx-3"><span>Архив периодики</span></div>
+                        <div class="sidebar-brand-text mx-3"><span>{% trans 'Archive of periodicals' %}</span></div>
                     </a>
                 </div>
                 <div id="nav-list" class="tree well">

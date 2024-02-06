@@ -13,26 +13,26 @@
 
 {% block body %}
     <div id="wrapper">
-        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary">
             <div id="nav-container" class="container-fluid d-flex flex-column p-0">
                 <div id="nav-header">
-                    <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="/">
+                    <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="/" style="word-wrap: break-word;">
                         <div class="sidebar-brand-icon"><i class="fas fa-chevron-left"></i></div>
-                        <div class="sidebar-brand-text mx-3"><span>Архив периодики</span></div>
+                        <div class="sidebar-brand-text mx-3"><span>{% trans 'Archive of periodicals' %}</span></div>
                     </a>
                     <div id="name" class="d-flex justify-content-center align-items-center">{{ periodical.name }}</div>
-                    <form class="d-flex justify-content-center align-items-center navbar-search">
-                        <div class="input-group">
-                            <div class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#HelpModal" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'How to search' %}">
-                                <i class="fa fa-question"></i>
-                            </div>
-                            <input id="search-string" class="bg-light form-control border-0 small" type="text" placeholder="Поиск">
-                            <input type="hidden" id="periodic" value="{{ periodical.id }}"/>
-                            {% csrf_token %}
-                            <button class="btn btn-primary py-0" type="submit" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Search' %}"><i class="fas fa-search"></i></button>
-                        </div>
-                    </form>
                 </div>
+                <form class="d-flex justify-content-center align-items-center navbar-search">
+                    <div class="input-group">
+                        <div class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#HelpModal" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'How to search' %}">
+                            <i class="fa fa-question"></i>
+                        </div>
+                        <input id="search-string" class="bg-light form-control border-0 small" type="text" placeholder="{% trans 'Search' %}">
+                        <input type="hidden" id="periodic" value="{{ periodical.id }}"/>
+                        {% csrf_token %}
+                        <button class="btn btn-primary py-0" type="submit" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Search' %}"><i class="fas fa-search"></i></button>
+                    </div>
+                </form>
                 <div id="wait" style="margin-top: 1vh;" class="spinner-border text-light" role="status">
                     <span class="visually-hidden">Loading...</span>
                 </div>

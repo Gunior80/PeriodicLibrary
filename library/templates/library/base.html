@@ -1,11 +1,12 @@
 {% load static %}
+{% load i18n %}
 
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <link rel="shortcut icon" type="image/png" href="{% static 'library/favicon.ico' %}"/>
-    <title>Архив периодики{% block tittle %}{% endblock %}</title>
+    <title>{% trans 'Archive of periodicals' %}{% block tittle %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'library/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'library/fonts/fontawesome-all.min.css' %}">
     <script src="{% static 'library/bootstrap/js/bootstrap.min.js' %}"></script>
