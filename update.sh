@@ -9,5 +9,5 @@ rootdir="$(cd "$(dirname "$0")" && pwd)"
 cd "$rootdir"
 
 source set_env.sh
-"$rootdir/autoadd.py" "$1"
+python3 "$rootdir/autoadd.py" "$1"
 deactivate

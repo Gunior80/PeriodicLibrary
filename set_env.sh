@@ -1,6 +1,5 @@
 #!/bin/bash
 
-cd ..
 source venv/bin/activate
 export PYTHONPATH="$PYTHONPATH:$(pwd)"
 
