@@ -83,6 +83,8 @@ function CreateChart(json, root, ul, prefix, name) {
 
 export function allstats(json) {
     let root = document.getElementById('stats');
+    let parent_root = root.parentElement;
+    parent_root.setAttribute("style","width:80%");
     let ul = document.createElement("ul");
 
     root.appendChild(ul);
@@ -100,6 +102,8 @@ export function allstats(json) {
 
 export function clientstats(json) {
     let root = document.getElementById('clients_stats');
+    let parent_root = root.parentElement;
+    parent_root.setAttribute("style","width:80%");
     let ul = document.createElement("ul");
     root.appendChild(ul);
     let text;
