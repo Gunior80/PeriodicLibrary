@@ -1,0 +1,211 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-03-05 10:09+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: .\library\admin.py:40
+msgid "Download tag lists"
+msgstr ""
+
+#: .\library\admin.py:61 .\library\models.py:263
+msgid "Statistic"
+msgstr ""
+
+#: .\library\admin.py:78 .\library\models.py:225
+msgid "Clients"
+msgstr ""
+
+#: .\library\admin.py:83 .\library\admin.py:152
+msgid "Number of instances"
+msgstr ""
+
+#: .\library\admin.py:88 .\library\admin.py:99
+msgid "Views for"
+msgstr ""
+
+#: .\library\admin.py:88 .\library\admin.py:93
+msgid "today"
+msgstr ""
+
+#: .\library\admin.py:93 .\library\admin.py:105
+msgid "Visits for"
+msgstr ""
+
+#: .\library\admin.py:99 .\library\admin.py:105
+msgid "this month"
+msgstr ""
+
+#: .\library\admin.py:142
+msgid "The task is completed in"
+msgstr ""
+
+#: .\library\admin.py:143
+msgid "seconds"
+msgstr ""
+
+#: .\library\admin.py:147
+msgid "Add keywords"
+msgstr ""
+
+#: .\library\admin.py:162
+msgid "List of tags"
+msgstr ""
+
+#: .\library\admin.py:191 .\library\models.py:247
+msgid "Addresses"
+msgstr ""
+
+#: .\library\apps.py:8
+msgid "Periodic library"
+msgstr ""
+
+#: .\library\forms.py:29
+msgid "Please provide a list of tags. One tag per line."
+msgstr ""
+
+#: .\library\models.py:26
+msgid "Tag group"
+msgstr ""
+
+#: .\library\models.py:27 .\library\models.py:36
+msgid "Tag groups"
+msgstr ""
+
+#: .\library\models.py:35 .\library\models.py:203
+msgid "Name"
+msgstr ""
+
+#: .\library\models.py:39
+msgid "cover"
+msgstr ""
+
+#: .\library\models.py:46 .\library\models.py:170 .\library\models.py:253
+msgid "Periodical"
+msgstr ""
+
+#: .\library\models.py:47
+msgid "Periodicals"
+msgstr ""
+
+#: .\library\models.py:144 .\library\models.py:151 .\library\models.py:256
+msgid "Visits"
+msgstr ""
+
+#: .\library\models.py:145 .\library\models.py:154 .\library\models.py:257
+msgid "Views"
+msgstr ""
+
+#: .\library\models.py:160
+msgid "All time"
+msgstr ""
+
+#: .\library\models.py:172 .\library\models.py:255
+msgid "Date"
+msgstr ""
+
+#: .\library\models.py:173 .\library\models.py:188
+msgid "Instance"
+msgstr ""
+
+#: .\library\models.py:174
+msgid "Text"
+msgstr ""
+
+#: .\library\models.py:189
+msgid "Instances"
+msgstr ""
+
+#: .\library\models.py:224 .\library\models.py:229 .\library\models.py:251
+msgid "Client"
+msgstr ""
+
+#: .\library\models.py:231 .\library\models.py:246
+msgid "Address"
+msgstr ""
+
+#: .\library\models.py:232
+msgid "comment"
+msgstr ""
+
+#: .\library\models.py:264
+msgid "Statistics"
+msgstr ""
+
+#: .\library\templates\library\base.html:9
+#: .\library\templates\library\catalog.html:21
+#: .\library\templates\library\index.html:14
+msgid "Archive of periodicals"
+msgstr ""
+
+#: .\library\templates\library\catalog.html:27
+#: .\library\templates\library\catalog.html:54
+msgid "How to search"
+msgstr ""
+
+#: .\library\templates\library\catalog.html:30
+#: .\library\templates\library\catalog.html:33
+msgid "Search"
+msgstr ""
+
+#: .\library\templates\library\catalog.html:55
+#: .\library\templates\library\catalog.html:72
+msgid "Close"
+msgstr ""
+
+#: .\library\templates\library\catalog.html:58
+msgid ""
+"The search bar provides you with a convenient way to quickly find "
+"information. Enter keywords, and the system will perform a substring search. "
+"Separate keywords with commas to refine your query."
+msgstr ""
+
+#: .\library\templates\library\catalog.html:59
+msgid "Usage examples:"
+msgstr ""
+
+#: .\library\templates\library\catalog.html:60
+msgid "Main search:"
+msgstr ""
+
+#: .\library\templates\library\catalog.html:61
+msgid "Enter \"Smith\" for a general search using this keyword."
+msgstr ""
+
+#: .\library\templates\library\catalog.html:63
+msgid "Search with multiple keywords:"
+msgstr ""
+
+#: .\library\templates\library\catalog.html:64
+msgid "Enter \"history, Smith\" to find related information."
+msgstr ""
+
+#: .\library\templates\library\catalog.html:66
+msgid "Partial match search:"
+msgstr ""
+
+#: .\library\templates\library\catalog.html:67
+msgid ""
+"Enter \"sci\" to get results that include \"science\" and \"scientific\"."
+msgstr ""
+
+#: .\library\templates\library\catalog.html:69
+msgid "Cancel search results:"
+msgstr ""
+
+#: .\library\templates\library\catalog.html:70
+msgid "Perform a search without specifying keywords."
+msgstr ""
