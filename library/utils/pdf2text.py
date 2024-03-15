@@ -1,5 +1,5 @@
 # Для считывания PDF
-import PyPDF2
+import pypdf
 # Для анализа структуры PDF и извлечения текста
 from pdfminer.high_level import extract_pages, extract_text
 from pdfminer.layout import LTTextContainer, LTChar, LTRect, LTFigure
@@ -45,7 +45,7 @@ def crop_image(element, pageObj):
     pageObj.mediabox.lower_left = (image_left, image_bottom)
     pageObj.mediabox.upper_right = (image_right, image_top)
     # Сохраняем обрезанную страницу в новый PDF
-    cropped_pdf_writer = PyPDF2.PdfWriter()
+    cropped_pdf_writer = pypdf.PdfWriter()
     cropped_pdf_writer.add_page(pageObj)
     # Сохраняем обрезанный PDF в новый файл
     with open('cropped_image.pdf', 'wb') as cropped_pdf_file:
@@ -101,7 +101,7 @@ def get_text(pdf_path):
     # создаём объект файла PDF
     pdfFileObj = open(pdf_path, 'rb')
     # создаём объект считывателя PDF
-    pdfReaded = PyPDF2.PdfReader(pdfFileObj)
+    pdfReaded = pypdf.PdfReader(pdfFileObj)
 
     # Создаём словарь для извлечения текста из каждого изображения
     text_per_page = {}
