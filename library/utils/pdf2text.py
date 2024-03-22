@@ -12,6 +12,7 @@ from pdf2image import convert_from_path
 import pytesseract
 # Для удаления дополнительно созданных файлов
 import os
+import random
 
 
 def text_extraction(element):
@@ -38,7 +39,7 @@ def text_extraction(element):
 
 
 # Создаём функцию для вырезания элементов изображений из PDF
-def crop_image(element, pageObj):
+def crop_image(element, pageObj, prefix):
     # Получаем координаты для вырезания изображения из PDF
     [image_left, image_top, image_right, image_bottom] = [element.x0,element.y0,element.x1,element.y1]
     # Обрезаем страницу по координатам (left, bottom, right, top)
@@ -48,15 +49,15 @@ def crop_image(element, pageObj):
     cropped_pdf_writer = pypdf.PdfWriter()
     cropped_pdf_writer.add_page(pageObj)
     # Сохраняем обрезанный PDF в новый файл
-    with open('cropped_image.pdf', 'wb') as cropped_pdf_file:
+    with open('{0}_cropped_image.pdf'.format(prefix), 'wb') as cropped_pdf_file:
         cropped_pdf_writer.write(cropped_pdf_file)
 
 
 # Создаём функцию для преобразования PDF в изображения
-def convert_to_images(input_file,):
+def convert_to_images(input_file, prefix):
     images = convert_from_path(input_file)
     image = images[0]
-    output_file = "PDF_image.png"
+    output_file = "{0}_PDF_image.png".format(prefix)
     image.save(output_file, "PNG")
 
 
@@ -96,8 +97,8 @@ def table_converter(table):
 
 
 def get_text(pdf_path):
-    # Находим путь к PDF
-    #pdf_path = '21.11.1929.pdf'
+    # создаем префикс для временных файлов, чтобы можно было выполнять операции в несколько потоков
+    prefix = ''.join(str(random.randint(0, 9)) for _ in range(10))
     # создаём объект файла PDF
     pdfFileObj = open(pdf_path, 'rb')
     # создаём объект считывателя PDF
@@ -156,11 +157,11 @@ def get_text(pdf_path):
             # Проверяем элементы на наличие изображений
             if isinstance(element, LTFigure):
                 # Вырезаем изображение из PDF
-                crop_image(element, pageObj)
+                crop_image(element, pageObj, prefix)
                 # Преобразуем обрезанный pdf в изображение
-                convert_to_images('cropped_image.pdf')
+                convert_to_images('{0}_cropped_image.pdf'.format(prefix),prefix)
                 # Извлекаем текст из изображения
-                image_text = image_to_text('PDF_image.png')
+                image_text = image_to_text('{0}_PDF_image.png'.format(prefix))
                 text_from_images.append(image_text)
                 page_content.append(image_text)
                 # Добавляем условное обозначение в списки текста и формата
@@ -206,7 +207,7 @@ def get_text(pdf_path):
     pdfFileObj.close()
 
     # Удаляем созданные дополнительные файлы
-    os.remove('cropped_image.pdf')
-    os.remove('PDF_image.png')
+    os.remove('{0}_cropped_image.pdf'.format(prefix))
+    os.remove('{0}_PDF_image.png'.format(prefix))
 
     return text_per_page

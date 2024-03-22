@@ -10,6 +10,8 @@ from django.utils.translation import gettext_lazy as _
 from PeriodicLibrary.settings import MEDIA_ROOT
 from library.forms import TagGroupForm, TagInstanceForm
 from library.models import Periodical, Instance, Client, Address, Statistic, TagGroup
+from concurrent.futures import ThreadPoolExecutor
+import multiprocessing
 
 
 @admin.register(TagGroup)
@@ -123,22 +125,35 @@ class InstanceAdmin(admin.ModelAdmin):
     actions = ('make_tags', )
     form = TagInstanceForm
 
+    def perform_action(self, instance):
+        from library.utils.pdf2text import get_text
+        from library.utils.morph import get_words
+        if not instance.fulltext:
+            document = get_text(os.path.join(MEDIA_ROOT, instance.file.name))
+            text = ''
+            for value in document.values():
+                text += ''.join(value[4]).replace('-\n', '')
+            instance.fulltext = text
+            instance.save()
+        words = get_words(instance.periodical, instance.fulltext)
+        instance.tags.add(*words)
+
     def make_tags(self, request, queryset):
         import time
         try:
             start_time = time.time()
-            from library.utils.pdf2text import get_text
-            from library.utils.morph import get_words
-            for instance in queryset:
-                if not instance.fulltext:
-                    document = get_text(os.path.join(MEDIA_ROOT, instance.file.name))
-                    text = ''
-                    for value in document.values():
-                        text += ''.join(value[4]).replace('-\n', '')
-                    instance.fulltext = text
-                    instance.save()
-                words = get_words(instance.periodical, instance.fulltext)
-                instance.tags.add(*words)
+
+            num_cores = multiprocessing.cpu_count()
+            # Определяем количество потоков, которое можно использовать (можно настроить по вашему усмотрению)
+            # Например, вы можете уменьшить количество на 1, чтобы избежать исчерпания ресурсов
+            num_workers = max(num_cores - 1, 1)
+            with ThreadPoolExecutor(max_workers=num_workers) as executor:
+                # Для каждого объекта в queryset отправляем его на выполнение в отдельный поток
+                futures = [executor.submit(self.perform_action, instance) for instance in queryset]
+                # Ожидаем завершения всех потоков
+                for future in futures:
+                    future.result()
+
             messages.info(request, "{0} {1} {2}".format(_("The task is completed in"),
                                                         time.time() - start_time, _("seconds")))
         except Exception as e:
